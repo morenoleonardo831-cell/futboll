@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -330,6 +329,8 @@
                 <option value="AUTO" selected>Automático (pela nacionalidade)</option>
                 <option value="BR">Brasil</option>
                 <option value="EN">Inglaterra</option>
+                <option value="AR">Argentina</option>
+                <option value="ES">Espanha</option>
               </select>
             </div>
 
@@ -356,6 +357,9 @@
             Você vai <b>gerar o jogador</b> e depois escolher <b>entre 3 clubes iniciais</b>.
             Atributos (PAC/SHO/PAS/DEF/PHY) definem o overall pela sua posição.
             Banco Santander: investimento rende <b>1% por semana</b>.
+            <br><br>
+            ✅ Novo: a <b>Loja agora tem valorização/depreciação</b>, <b>custos de manutenção</b> e <b>venda de itens</b>.
+            Também existe <b>imposto no salário</b> e <b>renda passiva</b> de negócios.
           </div>
         </div>
       </div>
@@ -510,11 +514,15 @@
             <div class="panel" id="tabLoja">
               <div class="pill">
                 <div>
-                  <div class="title">Compras & Patrimônio</div>
-                  <div class="desc">Carro, casa, avião, terrenos…</div>
+                  <div class="title">Compras, Patrimônio & Vendas</div>
+                  <div class="desc">Itens valorizam/depreciam + manutenção + renda passiva (negócios)</div>
                 </div>
                 <span class="tag" id="netWorthTag">🏠 Patrimônio: <b>R$ 0</b></span>
               </div>
+
+              <div class="statGrid" id="shopMeters"></div>
+
+              <div class="divider"></div>
 
               <div class="shopGrid" id="shopList"></div>
 
@@ -522,13 +530,16 @@
 
               <div class="pill">
                 <div>
-                  <div class="title">Seus itens</div>
-                  <div class="desc">O que você já comprou</div>
+                  <div class="title">Seus itens (com valor atual)</div>
+                  <div class="desc">Agora dá pra vender e realizar lucro/prejuízo</div>
                 </div>
                 <button class="btn btnSmall" id="btnSellHint">ℹ️</button>
               </div>
               <div class="list" id="ownedList"></div>
-              <div class="tiny">Obs: por enquanto não tem venda (só compra). Dá pra adicionar depois.</div>
+              <div class="tiny">
+                Regras rápidas: <b>carro</b> cai de preço, <b>casa</b> sobe, <b>terreno/fazenda</b> sobe, <b>luxo</b> cai um pouco,
+                <b>negócio</b> gera renda semanal.
+              </div>
             </div>
 
             <!-- HISTÓRICO -->
@@ -565,40 +576,38 @@
 <script>
 (function(){
   // =========================
-// LIGAS (ATUAIS)
-// =========================
-const BRASILEIRAO = [
-  "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
-  "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
-];
+  // LIGAS
+  // =========================
+  const BRASILEIRAO = [
+    "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
+    "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
+  ];
 
-const PREMIER = [
-  "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
-  "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
-];
+  const PREMIER = [
+    "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
+    "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
+  ];
 
-// 🇦🇷 ARGENTINA
-const ARGENTINA = [
-  "Boca Juniors","River Plate","Racing Club","Independiente","San Lorenzo",
-  "Estudiantes","Vélez Sarsfield","Lanús","Rosario Central","Newell's Old Boys",
-  "Defensa y Justicia","Talleres","Huracán","Argentinos Juniors","Godoy Cruz",
-  "Banfield","Belgrano","Unión","Platense","Sarmiento"
-];
+  const ARGENTINA = [
+    "Boca Juniors","River Plate","Racing Club","Independiente","San Lorenzo",
+    "Estudiantes","Vélez Sarsfield","Lanús","Rosario Central","Newell's Old Boys",
+    "Defensa y Justicia","Talleres","Huracán","Argentinos Juniors","Godoy Cruz",
+    "Banfield","Belgrano","Unión","Platense","Sarmiento"
+  ];
 
-// 🇪🇸 ESPANHA
-const LALIGA = [
-  "Real Madrid","Barcelona","Atlético de Madrid","Sevilla","Valencia",
-  "Villarreal","Real Sociedad","Athletic Bilbao","Real Betis","Celta de Vigo",
-  "Girona","Getafe","Mallorca","Osasuna","Rayo Vallecano",
-  "Alavés","Granada","Las Palmas","Cádiz","Espanyol"
-];
+  const LALIGA = [
+    "Real Madrid","Barcelona","Atlético de Madrid","Sevilla","Valencia",
+    "Villarreal","Real Sociedad","Athletic Bilbao","Real Betis","Celta de Vigo",
+    "Girona","Getafe","Mallorca","Osasuna","Rayo Vallecano",
+    "Alavés","Granada","Las Palmas","Cádiz","Espanyol"
+  ];
 
-const LEAGUES = [
-  { id:"BR", name:"Brasileirão", currency:"R$", teams: BRASILEIRAO, repWeight: 1.00 },
-  { id:"EN", name:"Premier League", currency:"£", teams: PREMIER, repWeight: 1.20 },
-  { id:"AR", name:"Liga Argentina", currency:"$", teams: ARGENTINA, repWeight: 0.95 },
-  { id:"ES", name:"La Liga", currency:"€", teams: LALIGA, repWeight: 1.15 }
-];
+  const LEAGUES = [
+    { id:"BR", name:"Brasileirão", currency:"R$", teams: BRASILEIRAO, repWeight: 1.00 },
+    { id:"EN", name:"Premier League", currency:"£", teams: PREMIER, repWeight: 1.20 },
+    { id:"AR", name:"Liga Argentina", currency:"$", teams: ARGENTINA, repWeight: 0.95 },
+    { id:"ES", name:"La Liga", currency:"€", teams: LALIGA, repWeight: 1.15 }
+  ];
 
   const POSITIONS = [
     { id:"ATA", label:"Centroavante", weights:{PAC:0.22, SHO:0.38, PAS:0.18, DEF:0.06, PHY:0.16} },
@@ -617,22 +626,43 @@ const LEAGUES = [
     DIFICIL: { playMul: 0.90, growthMul: 0.85, injuryMul: 1.35 }
   };
 
-  // Loja
+  // =========================
+  // IMPOSTOS (simples e divertido)
+  // =========================
+  const TAX_BY_LEAGUE = {
+    BR: 0.15,
+    AR: 0.16,
+    ES: 0.22,
+    EN: 0.25
+  };
+
+  // =========================
+  // LOJA (agora tem NEGÓCIOS + regras)
+  // =========================
   const SHOP_ITEMS = [
-    { id:"car_popular", type:"Carro", name:"Corola", price: 130000 },
-    { id:"car_esportivo", type:"Carro", name:"BMW", price: 350000 },
-    { id:"suv_luxo", type:"Carro", name:"Bentley", price: 1780000 },
+    // Carros (depreciam)
+    { id:"car_popular", type:"Carro", name:"Corola", price: 130000, meta:{ depPerWeek: 0.004, upkeepPerWeek: 120 } },
+    { id:"car_esportivo", type:"Carro", name:"BMW", price: 350000, meta:{ depPerWeek: 0.006, upkeepPerWeek: 260 } },
+    { id:"suv_luxo", type:"Carro", name:"Bentley", price: 1780000, meta:{ depPerWeek: 0.008, upkeepPerWeek: 1400 } },
 
-    { id:"ap_pequeno", type:"Casa", name:"Apartamento Pequeno em São Paulo", price: 1220000 },
-    { id:"casa_media", type:"Casa", name:"Casa Média em Manchister", price: 3650000 },
-    { id:"mansao", type:"Casa", name:"Mansão em Ibiza", price: 16500000 },
+    // Casas (valorizam) + custo (condomínio/imposto/manutenção)
+    { id:"ap_pequeno", type:"Casa", name:"Apartamento Pequeno em São Paulo", price: 1220000, meta:{ appPerWeek: 0.0016, upkeepPerWeek: 900 } },
+    { id:"casa_media", type:"Casa", name:"Casa Média em Manchister", price: 3650000, meta:{ appPerWeek: 0.0012, upkeepPerWeek: 1900 } },
+    { id:"mansao", type:"Casa", name:"Mansão em Ibiza", price: 16500000, meta:{ appPerWeek: 0.0010, upkeepPerWeek: 7200 } },
 
-    { id:"terreno", type:"Terreno", name:"Terreno (1 lote)", price: 120000 },
-    { id:"fazenda", type:"Terreno", name:"Fazenda", price: 50000000 },
+    // Terrenos (valorizam)
+    { id:"terreno", type:"Terreno", name:"Terreno (1 lote)", price: 120000, meta:{ appPerWeek: 0.0022, upkeepPerWeek: 50 } },
+    { id:"fazenda", type:"Terreno", name:"Fazenda", price: 50000000, meta:{ appPerWeek: 0.0028, upkeepPerWeek: 9000 } },
 
-    { id:"iate", type:"Luxo", name:"Iate", price: 12000000 },
-    { id:"jato", type:"Luxo", name:"Jato Particular", price: 75000000 },
-    { id:"helicoptero", type:"Luxo", name:"Helicóptero", price: 28000000 }
+    // Luxo (deprecia leve)
+    { id:"iate", type:"Luxo", name:"Iate", price: 12000000, meta:{ depPerWeek: 0.0032, upkeepPerWeek: 6500 } },
+    { id:"jato", type:"Luxo", name:"Jato Particular", price: 75000000, meta:{ depPerWeek: 0.0038, upkeepPerWeek: 28000 } },
+    { id:"helicoptero", type:"Luxo", name:"Helicóptero", price: 28000000, meta:{ depPerWeek: 0.0035, upkeepPerWeek: 12000 } },
+
+    // Negócios (valorizam um pouco + renda semanal)
+    { id:"neg_academia", type:"Negócio", name:"Academia (renda passiva)", price: 850000, meta:{ appPerWeek: 0.0010, incomePerWeek: 14000, upkeepPerWeek: 1800 } },
+    { id:"neg_loja", type:"Negócio", name:"Loja de Roupas (renda passiva)", price: 1250000, meta:{ appPerWeek: 0.0011, incomePerWeek: 19000, upkeepPerWeek: 2600 } },
+    { id:"neg_rest", type:"Negócio", name:"Restaurante (renda passiva)", price: 2200000, meta:{ appPerWeek: 0.0012, incomePerWeek: 32000, upkeepPerWeek: 4800 } }
   ];
 
   // =========================
@@ -655,10 +685,17 @@ const LEAGUES = [
   function leagueInfo(id){ return LEAGUES.find(l => l.id === id) || LEAGUES[0]; }
   function posInfo(id){ return POSITIONS.find(p => p.id === id) || POSITIONS[0]; }
 
+  // semana global (pra atualização de ativos)
+  function globalWeekNumber(){
+    // T1W1 -> 1
+    // T2W1 -> 39 (38 + 1)
+    return ((state.season - 1) * state.weeksPerSeason) + state.week;
+  }
+
   // =========================
   // ESTADO
   // =========================
-  const STORAGE_KEY = "mcj_save_v3_realista";
+  const STORAGE_KEY = "mcj_save_v4_loja_valores";
 
   let state = {
     createdAt: Date.now(),
@@ -668,12 +705,12 @@ const LEAGUES = [
     midWindowWeek: 19,
 
     news: [],
-    newsMax: 8, // ✅ limpa automaticamente
+    newsMax: 8,
 
     offers: [],
     objectives: [],
 
-    history: [], // temporadas passadas
+    history: [],
 
     player: null
   };
@@ -690,8 +727,7 @@ const LEAGUES = [
   // ATRIBUTOS / OVERALL
   // =========================
   function genAttributes(baseType, age){
-    // Base: 45–75 | Profissional: 55–86
-    const ageBoost = (age - 15) * 2; // 0..6
+    const ageBoost = (age - 15) * 2;
     const baseMin = baseType === "Base" ? 45 : 55;
     const baseMax = baseType === "Base" ? 75 : 86;
 
@@ -722,12 +758,12 @@ const LEAGUES = [
     return (Math.random() < baseChance) ? "Base" : "Profissional";
   }
   function decideStartLeagueByNat(nationality){
-  if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
-  if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
-  if(nationality === "Argentina") return (Math.random() < 0.85) ? "AR" : "ES";
-  if(nationality === "Espanha") return (Math.random() < 0.85) ? "ES" : "EN";
-  return (Math.random() < 0.50) ? "EN" : "BR";
-}
+    if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
+    if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
+    if(nationality === "Argentina") return (Math.random() < 0.85) ? "AR" : "ES";
+    if(nationality === "Espanha") return (Math.random() < 0.85) ? "ES" : "EN";
+    return (Math.random() < 0.50) ? "EN" : "BR";
+  }
 
   function genSalary(startType){
     if(startType === "Base") return randInt(5000, 15000);
@@ -762,7 +798,6 @@ const LEAGUES = [
     const p = state.player;
     if(!p) return;
 
-    // alvos variam por posição e reputação/overall
     const level = clamp(Math.round((p.overall + p.reputation)/2), 35, 95);
 
     const gTarget = p.position === "GOL" ? 0 : clamp(Math.round(6 + (level-50)/8), 3, 18);
@@ -872,7 +907,6 @@ const LEAGUES = [
     const p = state.player;
     if(!p) return;
 
-    // 1% por semana (juros compostos)
     if(p.bank.invested > 0){
       const interest = p.bank.invested * 0.01;
       p.bank.invested += interest;
@@ -912,6 +946,201 @@ const LEAGUES = [
   }
 
   // =========================
+  // LOJA: VALOR ATUAL + MANUTENÇÃO + RENDA PASSIVA
+  // =========================
+  function getItemDef(id){
+    return SHOP_ITEMS.find(x=>x.id===id) || null;
+  }
+
+  function currentOwnedValue(owned){
+    // owned: {id,name,type,price,boughtAt,boughtGlobalWeek,lastValueGlobalWeek, currentValue}
+    const def = getItemDef(owned.id);
+    const meta = (def && def.meta) ? def.meta : (owned.meta || {});
+    const gNow = globalWeekNumber();
+    const last = owned.lastValueGlobalWeek ?? owned.boughtGlobalWeek ?? gNow;
+    const weeks = Math.max(0, gNow - last);
+
+    let v = (owned.currentValue ?? owned.price);
+
+    if(weeks <= 0) return { value: v, delta: 0 };
+
+    // pequena aleatoriedade semanal (mercado)
+    const jitter = () => (Math.random()*0.004 - 0.002); // -0.2% a +0.2%
+
+    for(let i=0;i<weeks;i++){
+      if(meta.depPerWeek){
+        v *= (1 - meta.depPerWeek + jitter());
+      } else if(meta.appPerWeek){
+        v *= (1 + meta.appPerWeek + jitter());
+      } else {
+        // sem regra: quase estável
+        v *= (1 + jitter());
+      }
+      v = clamp(v, owned.price*0.15, owned.price*6.0);
+    }
+
+    const delta = v - (owned.currentValue ?? owned.price);
+    return { value: v, delta };
+  }
+
+  function updateAllOwnedValuesAndApplyCashflows(){
+    const p = state.player;
+    if(!p) return;
+
+    const gNow = globalWeekNumber();
+
+    let upkeepTotal = 0;
+    let passiveIncome = 0;
+    let valueDeltaTotal = 0;
+
+    for(const owned of p.owned){
+      // Atualiza valor
+      const upd = currentOwnedValue(owned);
+      owned.currentValue = upd.value;
+      owned.lastValueGlobalWeek = gNow;
+      valueDeltaTotal += upd.delta;
+
+      const def = getItemDef(owned.id);
+      const meta = (def && def.meta) ? def.meta : (owned.meta || {});
+      if(meta.upkeepPerWeek) upkeepTotal += meta.upkeepPerWeek;
+      if(meta.incomePerWeek) passiveIncome += meta.incomePerWeek;
+    }
+
+    // Aplica renda passiva
+    if(passiveIncome > 0){
+      p.wallet += passiveIncome;
+      p.finance.passiveIncomeTotal += passiveIncome;
+      p.finance.lastPassiveIncome = passiveIncome;
+      addNews(`🏪 Renda passiva: +${formatBRL(passiveIncome)} (negócios).`);
+    } else {
+      p.finance.lastPassiveIncome = 0;
+    }
+
+    // Aplica manutenção (se não tiver grana, vira "dívida" simples e afeta moral)
+    if(upkeepTotal > 0){
+      if(p.wallet >= upkeepTotal){
+        p.wallet -= upkeepTotal;
+        p.finance.maintenancePaidTotal += upkeepTotal;
+        p.finance.lastMaintenance = upkeepTotal;
+        addNews(`🧰 Manutenção/contas: -${formatBRL(upkeepTotal)} (itens).`);
+      } else {
+        // dívida
+        const missing = upkeepTotal - p.wallet;
+        p.finance.debt += missing;
+        p.finance.lastMaintenance = upkeepTotal;
+        p.finance.maintenancePaidTotal += p.wallet;
+        p.wallet = 0;
+        p.morale = clamp(p.morale - randInt(2,6), 0, 100);
+        addNews(`🧾 Contas dos itens não pagas! Dívida +${formatBRL(missing)} e moral caiu.`);
+      }
+    } else {
+      p.finance.lastMaintenance = 0;
+    }
+
+    // resumo de variação de patrimônio (só informativo, sem mexer na carteira)
+    p.finance.lastAssetDelta = valueDeltaTotal;
+  }
+
+  function totalMarketAssets(){
+    const p = state.player;
+    if(!p) return 0;
+    let total = 0;
+    for(const owned of p.owned){
+      total += (owned.currentValue ?? owned.price);
+    }
+    return total;
+  }
+
+  function totalNetWorth(){
+    const p = state.player;
+    if(!p) return 0;
+    // patrimônio = carteira + investido + ativos - dívida
+    return (p.wallet + (p.bank?.invested || 0) + totalMarketAssets() - (p.finance?.debt || 0));
+  }
+
+  function sellItem(ownedId){
+    const p = state.player;
+    if(!p) return;
+
+    const idx = p.owned.findIndex(o => o.id === ownedId);
+    if(idx === -1) return;
+
+    // garante valor atualizado antes de vender
+    const o = p.owned[idx];
+    const upd = currentOwnedValue(o);
+    o.currentValue = upd.value;
+    o.lastValueGlobalWeek = globalWeekNumber();
+
+    // taxa de venda (corretagem/transferência)
+    const feeRate = 0.02; // 2%
+    const fee = o.currentValue * feeRate;
+    const received = Math.max(0, o.currentValue - fee);
+
+    // lucro/prejuízo
+    const profit = received - o.price;
+
+    p.wallet += received;
+    p.finance.salesTotal += received;
+    p.finance.salesProfitTotal += profit;
+
+    p.owned.splice(idx, 1);
+
+    addNews(`💸 Venda: ${o.name} por ${formatBRL(received)} (taxa ${formatBRL(fee)}). ${profit>=0 ? "Lucro" : "Prejuízo"}: ${formatBRL(profit)}.`);
+    toast("Vendido!");
+    render();
+  }
+
+  // =========================
+  // FINANÇAS: SALÁRIO COM IMPOSTO + DÍVIDA
+  // =========================
+  function getTaxRate(){
+    const p = state.player;
+    if(!p) return 0;
+    const base = TAX_BY_LEAGUE[p.leagueId] ?? 0.15;
+    // "faixa" por salário (simples)
+    let extra = 0;
+    if(p.weeklySalary >= 200000) extra = 0.06;
+    else if(p.weeklySalary >= 120000) extra = 0.04;
+    else if(p.weeklySalary >= 60000) extra = 0.02;
+    return clamp(base + extra, 0.10, 0.33);
+  }
+
+  function payWeeklySalary(){
+    const p = state.player;
+
+    // salário bruto
+    const gross = p.weeklySalary;
+
+    // imposto
+    const taxRate = getTaxRate();
+    const tax = Math.round(gross * taxRate);
+
+    // paga líquido
+    const net = Math.max(0, gross - tax);
+    p.wallet += net;
+
+    p.finance.taxesPaidTotal += tax;
+    p.finance.lastTax = tax;
+    p.finance.lastNetSalary = net;
+
+    addNews(`💰 Salário: ${formatBRL(net)} líquido (imposto -${formatBRL(tax)}).`);
+
+    // contrato
+    p.contractWeeks = Math.max(0, p.contractWeeks - 1);
+
+    // se tem dívida, tenta abater automaticamente 10% do líquido (mínimo 500)
+    if(p.finance.debt > 0){
+      const pay = clamp(Math.round(net * 0.10), 500, net);
+      const paid = Math.min(pay, p.finance.debt, p.wallet);
+      if(paid > 0){
+        p.wallet -= paid;
+        p.finance.debt -= paid;
+        addNews(`🧾 Pagamento de dívida: -${formatBRL(paid)}. Dívida restante: ${formatBRL(p.finance.debt)}.`);
+      }
+    }
+  }
+
+  // =========================
   // GERAR JOGADOR
   // =========================
   function generatePlayer(){
@@ -948,7 +1177,7 @@ const LEAGUES = [
 
       leagueId,
       leagueName: leagueInfo(leagueId).name,
-      club: null, // vai escolher
+      club: null,
 
       weeklySalary,
       contractWeeks,
@@ -969,9 +1198,27 @@ const LEAGUES = [
         lastInterest: 0
       },
 
-      owned: [], // itens comprados
+      finance: {
+        taxesPaidTotal: 0,
+        lastTax: 0,
+        lastNetSalary: 0,
 
-      // stats por temporada atual (zera ao finalizar)
+        passiveIncomeTotal: 0,
+        lastPassiveIncome: 0,
+
+        maintenancePaidTotal: 0,
+        lastMaintenance: 0,
+
+        debt: 0,
+
+        lastAssetDelta: 0,
+
+        salesTotal: 0,
+        salesProfitTotal: 0
+      },
+
+      owned: [],
+
       seasonStats: {
         matches: 0,
         goals: 0,
@@ -1016,16 +1263,14 @@ const LEAGUES = [
 
     const l = leagueInfo(p.leagueId);
 
-    // 3 clubes diferentes
     const picks = new Set();
     while(picks.size < 3){
       picks.add(choice(l.teams));
     }
-    const options = [...picks].map((clubName, i)=>{
-      // clubes “melhores” aleatoriamente pagam um pouco mais
+    const options = [...picks].map((clubName)=>{
       const strength = randInt(50, 95);
-      const salaryMul = 0.85 + (strength/200); // ~1.10 max
-      const repMul = 0.85 + (strength/220);    // ~1.28 max
+      const salaryMul = 0.85 + (strength/200);
+      const repMul = 0.85 + (strength/220);
       const salary = Math.round(p.weeklySalary * salaryMul / 1000) * 1000;
 
       return {
@@ -1088,10 +1333,8 @@ const LEAGUES = [
     p.weeklySalary = o.weeklySalary;
     p.reputation = clamp(p.reputation + o.repBoost, 1, 100);
 
-    // reajusta multa no começo
     p.releaseClause = calcReleaseClause(p.weeklySalary, p.type);
 
-    // objetivos da temporada 1
     buildObjectives();
 
     addNews(`✅ Clube escolhido: ${p.club} (${o.leagueName}). Salário: ${formatBRL(p.weeklySalary)}/sem.`);
@@ -1104,12 +1347,6 @@ const LEAGUES = [
   // =========================
   // SIMULAÇÃO
   // =========================
-  function payWeeklySalary(){
-    const p = state.player;
-    p.wallet += p.weeklySalary;
-    p.contractWeeks = Math.max(0, p.contractWeeks - 1);
-  }
-
   function injuryCheck(){
     const p = state.player;
     if(p.injuredWeeks > 0) return;
@@ -1162,7 +1399,6 @@ const LEAGUES = [
     const p = state.player;
     const skill = p.overall / 100;
 
-    // usando atributos pra ficar mais realista
     const shot = p.attrs.SHO / 100;
     const pass = p.attrs.PAS / 100;
     const pace = p.attrs.PAC / 100;
@@ -1170,7 +1406,6 @@ const LEAGUES = [
     let goalP = (0.05 + skill*0.10) * (0.65 + shot*0.55) * (0.85 + pace*0.25);
     let assistP = (0.04 + skill*0.09) * (0.65 + pass*0.55) * (0.85 + pace*0.20);
 
-    // posição ajusta
     if(p.position === "ATA") { goalP *= 1.35; assistP *= 0.75; }
     if(["PE","PD"].includes(p.position)) { goalP *= 1.05; assistP *= 1.10; }
     if(p.position === "MEI") { goalP *= 0.78; assistP *= 1.38; }
@@ -1182,7 +1417,6 @@ const LEAGUES = [
       assistP = 0.008;
     }
 
-    // moral/físico
     goalP *= clamp(0.85 + (p.fitness/250) + (p.morale/350), 0.70, 1.25);
     assistP *= clamp(0.85 + (p.fitness/260) + (p.morale/360), 0.70, 1.25);
 
@@ -1225,14 +1459,12 @@ const LEAGUES = [
     if(Math.random() < chance){
       const inc = (rating >= 8.4) ? randInt(1,2) : (rating >= 7.6 ? 1 : (Math.random() < 0.35 ? 1 : 0));
       if(inc > 0){
-        // melhora overall + alguns atributos
         p.attrs.PAC = clamp(p.attrs.PAC + randInt(0,1), 35, 99);
         p.attrs.SHO = clamp(p.attrs.SHO + randInt(0,1), 35, 99);
         p.attrs.PAS = clamp(p.attrs.PAS + randInt(0,1), 35, 99);
         p.attrs.DEF = clamp(p.attrs.DEF + randInt(0,1), 35, 99);
         p.attrs.PHY = clamp(p.attrs.PHY + randInt(0,1), 35, 99);
 
-        // puxa mais pro atributo dominante da posição
         const pos = posInfo(p.position);
         const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1])[0][0];
         p.attrs[dom] = clamp(p.attrs[dom] + 1, 35, 99);
@@ -1261,7 +1493,6 @@ const LEAGUES = [
       return { played:false, rating:null };
     }
 
-    // stats temporada e carreira
     p.seasonStats.matches += 1;
     p.careerStats.matches += 1;
 
@@ -1282,7 +1513,6 @@ const LEAGUES = [
       p.careerStats.assists += a;
     }
 
-    // rating
     const skill = p.overall / 100;
     let rating = 6.15 + skill * 2.25
       + (g ? 0.85 : 0)
@@ -1296,13 +1526,10 @@ const LEAGUES = [
 
     rating = clamp(rating, 5.4, 9.7);
 
-    // média móvel por temporada atual
     p.seasonStats.avgRating = (p.seasonStats.avgRating * 0.88) + (rating * 0.12);
 
-    // desgaste
     p.fitness = clamp(p.fitness - randInt(6, 14), 0, 100);
 
-    // moral
     p.morale = clamp(p.morale + (rating >= 7.2 ? randInt(2,5) : rating <= 6.2 ? -randInt(1,4) : randInt(0,2)), 0, 100);
 
     updateReputationFromMatch(rating, true);
@@ -1344,14 +1571,17 @@ const LEAGUES = [
       return;
     }
 
-    // salário e contrato
+    // salário + imposto + dívida
     payWeeklySalary();
 
-    // Banco Santander rende 1%/sem
+    // Banco 1%/sem
     bankTickWeekly();
     if(p.bank.lastInterest > 0){
       addNews(`🏦 Santander: rendimento +${formatBRL(p.bank.lastInterest)} (1%).`);
     }
+
+    // LOJA: atualiza valores + renda passiva + manutenção
+    updateAllOwnedValuesAndApplyCashflows();
 
     // recuperação/lesão
     recoveryTick();
@@ -1398,11 +1628,9 @@ const LEAGUES = [
     if(p.type === "Base") gainChance *= 1.08;
 
     if(p.overall < p.potential && Math.random() < gainChance){
-      // melhora 1-2 atributos focados
       const pos = posInfo(p.position);
       const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
       dom.forEach(k => p.attrs[k] = clamp(p.attrs[k] + randInt(0,1), 35, 99));
-      // chance de +1 em outro
       const keys = ["PAC","SHO","PAS","DEF","PHY"];
       p.attrs[choice(keys)] = clamp(p.attrs[choice(keys)] + (Math.random()<0.5?1:0), 35, 99);
 
@@ -1458,7 +1686,10 @@ const LEAGUES = [
 
   function pickOfferLeague(){
     const p = state.player;
-    return (Math.random() < 0.70) ? p.leagueId : (p.leagueId === "BR" ? "EN" : "BR");
+    // 30% chance de ser outra liga
+    if(Math.random() < 0.70) return p.leagueId;
+    const other = LEAGUES.map(x=>x.id).filter(id=>id!==p.leagueId);
+    return choice(other.length ? other : ["BR"]);
   }
 
   function genOfferClub(excludeKeySet){
@@ -1477,7 +1708,6 @@ const LEAGUES = [
     const p = state.player;
     const league = leagueInfo(p.leagueId);
 
-    // salarial baseado em overall + reputação + “tamanho” de liga
     const base = 32000 + (p.overall * 1400) + (p.reputation * 650);
     const leagueJitter = (league.id === "EN") ? randInt(0, 30000) : randInt(-5000, 15000);
     const jitter = randInt(-15000, 28000) + leagueJitter;
@@ -1597,18 +1827,8 @@ const LEAGUES = [
   }
 
   // =========================
-  // LOJA
+  // LOJA: COMPRAR / VENDER
   // =========================
-  function netWorth(){
-    const p = state.player;
-    if(!p) return 0;
-    let assets = 0;
-    for(const own of p.owned){
-      assets += own.price;
-    }
-    return assets;
-  }
-
   function buyItem(itemId){
     const p = state.player;
     if(!p) return;
@@ -1622,7 +1842,16 @@ const LEAGUES = [
     if(p.wallet < item.price) return toast("Dinheiro insuficiente.");
 
     p.wallet -= item.price;
-    p.owned.push({ ...item, boughtAt: Date.now() });
+
+    const gNow = globalWeekNumber();
+    p.owned.push({
+      ...item,
+      meta: item.meta || {},
+      boughtAt: Date.now(),
+      boughtGlobalWeek: gNow,
+      lastValueGlobalWeek: gNow,
+      currentValue: item.price
+    });
 
     addNews(`🛒 Compra: ${item.name} por ${formatBRL(item.price)}.`);
     toast("Comprado!");
@@ -1636,7 +1865,6 @@ const LEAGUES = [
     const p = state.player;
     if(!p) return;
 
-    // salva snapshot da temporada encerrada
     state.history.unshift({
       season: state.season,
       club: p.club,
@@ -1650,7 +1878,6 @@ const LEAGUES = [
       stats: { ...p.seasonStats }
     });
 
-    // limita histórico pra não pesar
     state.history = state.history.slice(0, 20);
   }
 
@@ -1681,39 +1908,31 @@ const LEAGUES = [
     const p = state.player;
     if(!p) return;
 
-    // paga objetivos e registra
     evalObjectivesEndSeason();
 
-    // resumo e histórico
     seasonSummaryNews();
     seasonSummaryToHistory();
 
     addNews(`🏁 Temporada ${state.season} encerrada! Gerando propostas...`);
     generateOffers("END");
 
-    // próxima temporada
     state.season += 1;
     state.week = 1;
 
-    // envelhece
     p.age = clamp(p.age + 1, 15, 40);
 
-    // promoção
     if(p.type === "Base" && p.age >= 17 && Math.random() < 0.60){
       p.type = "Profissional";
       p.weeklySalary = clamp(p.weeklySalary, 40000, 120000);
       addNews("🔵 Promoção: agora você é do PROFISSIONAL.");
     }
 
-    // recuperação entre temporadas
     p.fitness = clamp(p.fitness + randInt(12, 28), 0, 100);
     p.morale = clamp(p.morale + randInt(2, 7), 0, 100);
     p.injuredWeeks = 0;
 
-    // reset stats da temporada atual
     resetSeasonStats();
 
-    // objetivos novos
     p.seasonStartOverall = p.overall;
     p.seasonStartRep = p.reputation;
     buildObjectives();
@@ -1755,6 +1974,8 @@ const LEAGUES = [
     const injuryLine = p.injuredWeeks > 0
       ? `<span class="tag" style="border-color: rgba(255,93,93,.35)">🩹 Lesão: <b>${p.injuredWeeks} sem</b></span>`
       : `<span class="tag">✅ Sem lesão</span>`;
+
+    const taxRate = Math.round(getTaxRate() * 100);
 
     $("playerPanel").innerHTML = `
       <div class="pill">
@@ -1800,7 +2021,12 @@ const LEAGUES = [
 
       <div class="divider"></div>
 
-      <div class="tag">🏦 Carteira: <b>${formatBRL(p.wallet)}</b></div>
+      <div class="row">
+        <span class="tag">🏦 Carteira: <b>${formatBRL(p.wallet)}</b></span>
+        <span class="tag">🧾 Imposto atual: <b>${taxRate}%</b></span>
+        <span class="tag" style="border-color: rgba(255,93,93,.35)">📌 Dívida: <b>${formatBRL(p.finance.debt || 0)}</b></span>
+      </div>
+
       <div class="hint" style="margin-top:10px">
         <b>Potencial:</b> ${p.potential}. Dificuldade: <b>${p.difficulty}</b> (jogar x${d.playMul.toFixed(2)}, evolução x${d.growthMul.toFixed(2)}, lesões x${d.injuryMul.toFixed(2)}).
       </div>
@@ -1886,7 +2112,6 @@ const LEAGUES = [
 
     let done = 0;
     for(const o of state.objectives){
-      // progresso
       let prog = 0;
       if(o.kind === "matches") prog = p.seasonStats.matches;
       if(o.kind === "goals") prog = p.seasonStats.goals;
@@ -1941,20 +2166,50 @@ const LEAGUES = [
 
   function renderShop(){
     const p = state.player;
-    $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>${formatBRL(netWorth())}</b>`;
 
-    const shop = $("shopList");
-    shop.innerHTML = "";
+    const shopMeters = $("shopMeters");
+    shopMeters.innerHTML = "";
 
     if(!p){
-      shop.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>R$ 0</b>`;
+      shopMeters.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      $("shopList").innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
       $("ownedList").innerHTML = `<div class="hint">Sem itens.</div>`;
       return;
     }
 
+    // Atualiza tag de patrimônio total (carteira + investido + ativos - dívida)
+    $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>${formatBRL(totalNetWorth())}</b>`;
+
+    // Meters da loja (semanais)
+    const meters = [
+      { k:"Ativos (valor atual)", v: formatBRL(totalMarketAssets()) },
+      { k:"Variação dos ativos (últ. update)", v: formatBRL(p.finance.lastAssetDelta || 0) },
+      { k:"Renda passiva (últ. semana)", v: formatBRL(p.finance.lastPassiveIncome || 0) },
+      { k:"Manutenção (últ. semana)", v: formatBRL(p.finance.lastMaintenance || 0) },
+      { k:"Dívida", v: formatBRL(p.finance.debt || 0) }
+    ];
+    meters.forEach(m=>{
+      const el = document.createElement("div");
+      el.className = "meter";
+      el.innerHTML = `<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div><span class="tag">🏪</span>`;
+      shopMeters.appendChild(el);
+    });
+
     // lista de compra
+    const shop = $("shopList");
+    shop.innerHTML = "";
+
     SHOP_ITEMS.forEach(item=>{
       const owned = p.owned.some(o=>o.id===item.id);
+
+      const meta = item.meta || {};
+      const small = [];
+      if(meta.incomePerWeek) small.push(`Renda: ${formatBRL(meta.incomePerWeek)}/sem`);
+      if(meta.upkeepPerWeek) small.push(`Manutenção: ${formatBRL(meta.upkeepPerWeek)}/sem`);
+      if(meta.depPerWeek) small.push(`Deprecia: ${(meta.depPerWeek*100).toFixed(2)}%/sem`);
+      if(meta.appPerWeek) small.push(`Valoriza: ${(meta.appPerWeek*100).toFixed(2)}%/sem`);
+
       const el = document.createElement("div");
       el.className = "box";
       el.innerHTML = `
@@ -1962,6 +2217,7 @@ const LEAGUES = [
         <div class="boxSub">${item.type} • Preço ${formatBRL(item.price)}</div>
         <div class="boxMid">
           <span>Saldo: <b>${formatBRL(p.wallet)}</b></span>
+          ${small.length ? `<span>📌 <b>${small.join(" • ")}</b></span>` : ``}
         </div>
         <div class="row" style="margin-top:10px">
           <button class="btn btnSmall ${owned ? "" : "btnPrimary"}" ${owned ? "disabled" : ""} data-buy="${item.id}">
@@ -1979,22 +2235,54 @@ const LEAGUES = [
       });
     });
 
-    // itens comprados
+    // itens comprados (com valor atual + vender)
     const ownedList = $("ownedList");
     ownedList.innerHTML = "";
     if(p.owned.length === 0){
       ownedList.innerHTML = `<div class="hint">Você ainda não comprou nada.</div>`;
     } else {
+      // atualiza visualmente valores (sem forçar cashflows)
+      const gNow = globalWeekNumber();
+      p.owned.forEach(o=>{
+        // atualiza valor "on the fly" só para mostrar (sem mexer no lastValueGlobalWeek)
+        const tmp = { ...o };
+        tmp.lastValueGlobalWeek = o.lastValueGlobalWeek ?? o.boughtGlobalWeek ?? gNow;
+        const upd = currentOwnedValue(tmp);
+        o.currentValue = upd.value; // ok manter atualizado visualmente
+      });
+
       p.owned.slice().reverse().forEach(o=>{
         const el = document.createElement("div");
         el.className = "box";
+
         const d = new Date(o.boughtAt);
         const dt = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+
+        const cur = o.currentValue ?? o.price;
+        const diff = cur - o.price;
+        const diffTxt = `${diff>=0?"+":""}${formatBRL(diff)}`;
+
         el.innerHTML = `
           <div class="boxTitle">🏷️ ${o.name}</div>
-          <div class="boxSub">${o.type} • ${formatBRL(o.price)} • comprado em ${dt}</div>
+          <div class="boxSub">${o.type} • comprado em ${dt}</div>
+          <div class="boxMid">
+            <span>Compra: <b>${formatBRL(o.price)}</b></span>
+            <span>Valor atual: <b>${formatBRL(cur)}</b></span>
+            <span>${diff>=0 ? "📈" : "📉"} Diferença: <b>${diffTxt}</b></span>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn btnSmall btnBlue" data-sell="${o.id}">Vender</button>
+          </div>
+          <div class="tiny">Venda tem taxa de 2%.</div>
         `;
         ownedList.appendChild(el);
+      });
+
+      ownedList.querySelectorAll("[data-sell]").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          const id = e.currentTarget.getAttribute("data-sell");
+          sellItem(id);
+        });
       });
     }
   }
@@ -2053,7 +2341,6 @@ const LEAGUES = [
     renderShop();
     renderHistory();
 
-    // botões
     const p = state.player;
     const hasCareer = !!(p && p.club);
     $("btnPlayWeek").disabled = !hasCareer;
@@ -2081,7 +2368,6 @@ const LEAGUES = [
       if(!raw){ toast("Não existe save ainda."); return; }
       state = JSON.parse(raw);
 
-      // compat / defaults
       state.newsMax ??= 8;
       state.history ??= [];
       state.objectives ??= [];
@@ -2089,6 +2375,12 @@ const LEAGUES = [
 
       if(state.player){
         state.player.bank ||= { name:"Santander", invested:0, totalInterest:0, lastInterest:0 };
+        state.player.finance ||= {
+          taxesPaidTotal:0,lastTax:0,lastNetSalary:0,
+          passiveIncomeTotal:0,lastPassiveIncome:0,
+          maintenancePaidTotal:0,lastMaintenance:0,
+          debt:0,lastAssetDelta:0,salesTotal:0,salesProfitTotal:0
+        };
         state.player.owned ||= [];
         state.player.attrs ||= genAttributes(state.player.type || "Base", state.player.age || 16);
         state.player.overall ||= calcOverallFromAttrs(state.player.position || "ATA", state.player.attrs);
@@ -2097,7 +2389,15 @@ const LEAGUES = [
         state.player.seasonStartOverall ??= state.player.overall;
         state.player.seasonStartRep ??= state.player.reputation ?? 10;
 
-        // se não tiver objetivos, cria
+        // compat: owned items antigos sem valores/semana
+        const gNow = globalWeekNumber();
+        state.player.owned.forEach(o=>{
+          o.meta ||= o.meta || {};
+          o.boughtGlobalWeek ??= gNow;
+          o.lastValueGlobalWeek ??= o.boughtGlobalWeek;
+          o.currentValue ??= o.price;
+        });
+
         if(!state.objectives || state.objectives.length === 0){
           buildObjectives();
         }
@@ -2128,7 +2428,6 @@ const LEAGUES = [
     if(!state.player){
       generatePlayer();
     }
-    // após gerar, vai para escolha de clube
     showClubPick();
   });
 
@@ -2164,14 +2463,13 @@ const LEAGUES = [
   });
 
   $("btnSellHint").addEventListener("click", ()=>{
-    toast("Venda ainda não existe. Se quiser, eu adiciono venda/depreciação/valorização.");
+    toast("Dica: Vender tem taxa de 2%. Negócios geram renda e também têm manutenção.");
   });
 
   $("btnSave").addEventListener("click", save);
   $("btnLoad").addEventListener("click", load);
   $("btnExit").addEventListener("click", exitGame);
 
-  // Tabs
   document.querySelectorAll(".tab").forEach(t=>{
     t.addEventListener("click", ()=>{
       setActiveTab(t.getAttribute("data-tab"));
@@ -2188,6 +2486,3 @@ const LEAGUES = [
 </script>
 </body>
 </html>
-
-
-
