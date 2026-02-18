@@ -1,0 +1,2168 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modo Carreira Jogador ⚽</title>
+
+  <style>
+    :root{
+      --bg:#07130f;
+      --text:#eafff6;
+      --muted:#b8d8c9;
+      --line:rgba(255,255,255,.10);
+      --accent:#1ff29a;
+      --accent2:#38a3ff;
+      --danger:#ff5d5d;
+      --gold:#ffd166;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(31,242,154,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(56,163,255,.14), transparent 55%),
+        linear-gradient(180deg, #04100c, #07130f 50%, #040d09);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+    .wrap{ width:min(1180px, 100%); }
+
+    .brand{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .logo{ display:flex; align-items:center; gap:12px; }
+    .ball{
+      width:44px; height:44px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #dff6ff 55%, #b9d5e7 100%);
+      box-shadow: inset 0 0 0 3px rgba(0,0,0,.18), 0 16px 35px rgba(0,0,0,.35);
+      position:relative; overflow:hidden;
+    }
+    .ball:before{
+      content:"";
+      position:absolute; inset:-20%;
+      background: conic-gradient(from 0deg,
+        rgba(0,0,0,.15), rgba(0,0,0,0) 12%,
+        rgba(0,0,0,.12) 24%, rgba(0,0,0,0) 36%,
+        rgba(0,0,0,.10) 48%, rgba(0,0,0,0) 60%,
+        rgba(0,0,0,.12) 72%, rgba(0,0,0,0) 84%,
+        rgba(0,0,0,.15));
+      opacity:.9; mix-blend-mode:multiply;
+    }
+    h1{ font-size:22px; margin:0; letter-spacing:.4px; }
+    .sub{ color:var(--muted); font-size:13px; margin-top:2px; }
+
+    .topActions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding:14px 14px 10px 14px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(31,242,154,.10), rgba(0,0,0,0));
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    .cardHeader h2{ margin:0; font-size:15px; letter-spacing:.3px; }
+    .cardBody{ padding:14px; }
+
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.15s transform, .15s background, .15s border, .15s opacity;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+    .btn:active{ transform: translateY(0px); }
+    .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+    .btnPrimary{
+      border-color: rgba(31,242,154,.35);
+      background: linear-gradient(180deg, rgba(31,242,154,.22), rgba(31,242,154,.08));
+    }
+    .btnBlue{
+      border-color: rgba(56,163,255,.35);
+      background: linear-gradient(180deg, rgba(56,163,255,.20), rgba(56,163,255,.08));
+    }
+    .btnDanger{
+      border-color: rgba(255,93,93,.35);
+      background: linear-gradient(180deg, rgba(255,93,93,.18), rgba(255,93,93,.08));
+    }
+    .btnSmall{ padding:8px 10px; border-radius:12px; font-weight:850; font-size:13px; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .col{ flex:1; min-width:140px; }
+
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      outline:none;
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+    }
+
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(0,0,0,.20);
+      color: var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .tag b{ color:var(--text); }
+
+    .divider{ height:1px; background: var(--line); margin:12px 0; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 400px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+
+    .pill{
+      display:flex; align-items:center; justify-content:space-between;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      background: rgba(0,0,0,.18);
+      margin-bottom:10px;
+      gap:12px;
+    }
+    .pill .title{ font-weight:950; }
+    .pill .desc{ font-size:12px; color:var(--muted); margin-top:2px; }
+    .big{ font-size:34px; font-weight:950; letter-spacing:.6px; }
+
+    .list{ display:flex; flex-direction:column; gap:10px; }
+    .box{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:12px;
+      background: rgba(0,0,0,.16);
+    }
+    .boxTitle{ font-weight:950; letter-spacing:.2px; }
+    .boxSub{ color:var(--muted); font-size:12px; margin-top:2px; }
+    .boxMid{
+      margin-top:8px;
+      display:flex; gap:10px; flex-wrap:wrap;
+      color:var(--muted); font-size:13px;
+      line-height:1.35;
+    }
+    .boxMid b{ color:var(--text); }
+
+    .hint{ font-size:12px; color:var(--muted); line-height:1.35; }
+
+    .screen{ display:none; animation: fade .20s ease-out; }
+    .screen.active{ display:block; }
+    @keyframes fade{ from{ opacity:.0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0); } }
+
+    .toast{
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow: var(--shadow);
+      display:none; z-index:99;
+      font-size:13px; color:var(--text);
+      backdrop-filter: blur(10px);
+      max-width: min(620px, calc(100% - 24px));
+      text-align:center;
+    }
+    .toast.show{ display:block; animation: fade .18s ease-out; }
+
+    .tabs{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.22);
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:.2px;
+      transition:.15s transform, .15s background;
+    }
+    .tab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); }
+    .tab.active{
+      border-color: rgba(31,242,154,.35);
+      background: linear-gradient(180deg, rgba(31,242,154,.20), rgba(31,242,154,.08));
+    }
+    .panel{ display:none; }
+    .panel.active{ display:block; }
+
+    .statGrid{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
+    }
+    @media (max-width: 700px){
+      .statGrid{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .meter{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      background: rgba(0,0,0,.16);
+    }
+    .meter .k{ font-size:12px; color:var(--muted); }
+    .meter .v{ font-weight:950; }
+
+    .shopGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 780px){
+      .shopGrid{ grid-template-columns: 1fr; }
+    }
+
+    .tiny{ font-size:11px; color:var(--muted); line-height:1.35; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="brand">
+      <div class="logo">
+        <div class="ball" aria-hidden="true"></div>
+        <div>
+          <h1>Modo Carreira Jogador</h1>
+          <div class="sub">Atributos, objetivos, janela, histórico realista, banco e compras.</div>
+        </div>
+      </div>
+
+      <div class="topActions">
+        <button class="btn btnSmall" id="btnLoad">Carregar</button>
+        <button class="btn btnSmall" id="btnSave">Salvar</button>
+        <button class="btn btnSmall btnDanger" id="btnExit">Sair do jogo</button>
+      </div>
+    </div>
+
+    <!-- TELA INICIAL -->
+    <div class="screen active" id="screenStart">
+      <div class="card">
+        <div class="cardHeader">
+          <h2>Iniciar</h2>
+          <span class="tag">⚽ <b>Carreira Realista</b> • Banco Santander • Loja</span>
+        </div>
+        <div class="cardBody">
+          <div class="row">
+            <div class="col">
+              <label>Nome do jogador</label>
+              <input id="inpName" placeholder="Ex: Leonardo Moreno" maxlength="22" />
+            </div>
+            <div class="col">
+              <label>Nacionalidade</label>
+              <select id="selNat">
+                <option value="Brasil">Brasil</option>
+                <option value="Inglaterra">Inglaterra</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Espanha">Espanha</option>
+                <option value="França">França</option>
+                <option value="Alemanha">Alemanha</option>
+                <option value="Itália">Itália</option>
+                <option value="Uruguai">Uruguai</option>
+                <option value="Colômbia">Colômbia</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div class="col">
+              <label>Posição</label>
+              <select id="selPos">
+                <option value="AUTO">Aleatória</option>
+                <option value="ATA">ATA (Centroavante)</option>
+                <option value="PE">PE (Ponta Esquerda)</option>
+                <option value="PD">PD (Ponta Direita)</option>
+                <option value="MEI">MEI (Armador)</option>
+                <option value="VOL">VOL (Volante)</option>
+                <option value="ZAG">ZAG (Zagueiro)</option>
+                <option value="LAT">LAT (Lateral)</option>
+                <option value="GOL">GOL (Goleiro)</option>
+              </select>
+            </div>
+
+            <div class="col">
+              <label>Dificuldade</label>
+              <select id="selDiff">
+                <option value="FACIL">Fácil</option>
+                <option value="MEDIO" selected>Médio</option>
+                <option value="DIFICIL">Difícil</option>
+              </select>
+            </div>
+
+            <div class="col">
+              <label>Liga inicial</label>
+              <select id="selStartLeague">
+                <option value="AUTO" selected>Automático (pela nacionalidade)</option>
+                <option value="BR">Brasil</option>
+                <option value="EN">Inglaterra</option>
+              </select>
+            </div>
+
+            <div class="col">
+              <label>Começar onde?</label>
+              <select id="selStartType">
+                <option value="AUTO" selected>Automático (pela idade)</option>
+                <option value="Base">Base</option>
+                <option value="Profissional">Profissional</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn btnPrimary" id="btnGenerate">🎲 Gerar Jogador</button>
+            <button class="btn btnBlue" id="btnStartCareer">🚀 Começar Carreira</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="hint">
+            Você vai <b>gerar o jogador</b> e depois escolher <b>entre 3 clubes iniciais</b>.
+            Atributos (PAC/SHO/PAS/DEF/PHY) definem o overall pela sua posição.
+            Banco Santander: investimento rende <b>1% por semana</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCOLHER CLUBE INICIAL -->
+    <div class="screen" id="screenClubPick">
+      <div class="card">
+        <div class="cardHeader">
+          <h2>Escolha seu clube inicial</h2>
+          <span class="tag">🎯 3 opções • influenciam salário e reputação</span>
+        </div>
+        <div class="cardBody">
+          <div class="hint" id="pickHint" style="margin-bottom:10px"></div>
+          <div class="shopGrid" id="clubPickList"></div>
+          <div class="divider"></div>
+          <div class="row">
+            <button class="btn" id="btnBackToStart">⬅️ Voltar</button>
+            <button class="btn btnPrimary" id="btnConfirmPick" disabled>✅ Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOGO -->
+    <div class="screen" id="screenGame">
+      <div class="grid">
+
+        <!-- PAINEL JOGADOR -->
+        <div class="card">
+          <div class="cardHeader">
+            <h2>Seu Jogador</h2>
+            <span class="tag">🏅 Reputação • 🧾 Contrato • 💳 Santander</span>
+          </div>
+          <div class="cardBody" id="playerPanel"></div>
+        </div>
+
+        <!-- TABS -->
+        <div class="card">
+          <div class="cardHeader">
+            <h2>Central</h2>
+            <span class="tag" id="midTag">🪟 Janela: semana 19</span>
+          </div>
+          <div class="cardBody">
+            <div class="tabs">
+              <button class="tab active" data-tab="tabTemporada">Temporada</button>
+              <button class="tab" data-tab="tabObjetivos">Objetivos</button>
+              <button class="tab" data-tab="tabPropostas">Propostas</button>
+              <button class="tab" data-tab="tabBanco">Banco</button>
+              <button class="tab" data-tab="tabLoja">Loja</button>
+              <button class="tab" data-tab="tabHistorico">Histórico</button>
+            </div>
+
+            <!-- TEMPORADA -->
+            <div class="panel active" id="tabTemporada">
+              <div class="pill">
+                <div>
+                  <div class="title">Progresso</div>
+                  <div class="desc" id="seasonLine">Temporada 1 • Semana 1/38</div>
+                </div>
+                <div class="big" id="weekBig">1</div>
+              </div>
+
+              <div class="row">
+                <button class="btn btnPrimary" id="btnPlayWeek">▶️ Jogar Semana</button>
+                <button class="btn" id="btnTrain">🏋️ Treinar</button>
+                <button class="btn" id="btnRest">🛌 Descansar</button>
+                <button class="btn btnBlue" id="btnEndSeason">🏁 Finalizar Temporada</button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="pill">
+                <div>
+                  <div class="title">Notificações (limpam sozinhas)</div>
+                  <div class="desc">Mostra só as últimas para não lotar a tela</div>
+                </div>
+                <span class="tag" id="newsTag">📰 0</span>
+              </div>
+
+              <div class="list" id="newsList"></div>
+              <div class="tiny">Dica: as mensagens antigas somem automaticamente.</div>
+            </div>
+
+            <!-- OBJETIVOS -->
+            <div class="panel" id="tabObjetivos">
+              <div class="pill">
+                <div>
+                  <div class="title">Objetivos do Técnico</div>
+                  <div class="desc">Cumpra para ganhar bônus e reputação</div>
+                </div>
+                <span class="tag" id="objTag">🎯 0/0</span>
+              </div>
+              <div class="list" id="objList"></div>
+              <div class="divider"></div>
+              <div class="hint">No fim da temporada o jogo avalia e paga a recompensa automaticamente.</div>
+            </div>
+
+            <!-- PROPOSTAS -->
+            <div class="panel" id="tabPropostas">
+              <div class="pill">
+                <div>
+                  <div class="title">Negociações</div>
+                  <div class="desc">Meio (semana 19) e fim da temporada</div>
+                </div>
+                <div class="row">
+                  <button class="btn btnSmall" id="btnRenew">🔁 Renovar</button>
+                  <button class="btn btnSmall" id="btnClearOffers">Limpar</button>
+                </div>
+              </div>
+
+              <div class="list" id="offersList"></div>
+              <div class="hint" style="margin-top:10px">
+                A reputação influencia o nível das propostas e as luvas.
+              </div>
+            </div>
+
+            <!-- BANCO -->
+            <div class="panel" id="tabBanco">
+              <div class="pill">
+                <div>
+                  <div class="title">Santander</div>
+                  <div class="desc">Investimento rende 1% por semana (juros compostos)</div>
+                </div>
+                <span class="tag">📈 <b>+1%/sem</b></span>
+              </div>
+
+              <div class="statGrid" id="bankMeters"></div>
+
+              <div class="divider"></div>
+              <div class="row">
+                <div class="col">
+                  <label>Valor para investir</label>
+                  <input id="inpInvest" type="number" min="0" step="1000" placeholder="Ex: 50000" />
+                </div>
+                <button class="btn btnPrimary" id="btnInvest">Investir</button>
+              </div>
+
+              <div class="row" style="margin-top:10px">
+                <div class="col">
+                  <label>Valor para resgatar</label>
+                  <input id="inpWithdraw" type="number" min="0" step="1000" placeholder="Ex: 20000" />
+                </div>
+                <button class="btn btnBlue" id="btnWithdraw">Resgatar</button>
+              </div>
+
+              <div class="divider"></div>
+              <div class="hint">O rendimento acontece automaticamente ao jogar a semana.</div>
+            </div>
+
+            <!-- LOJA -->
+            <div class="panel" id="tabLoja">
+              <div class="pill">
+                <div>
+                  <div class="title">Compras & Patrimônio</div>
+                  <div class="desc">Carro, casa, avião, terrenos…</div>
+                </div>
+                <span class="tag" id="netWorthTag">🏠 Patrimônio: <b>R$ 0</b></span>
+              </div>
+
+              <div class="shopGrid" id="shopList"></div>
+
+              <div class="divider"></div>
+
+              <div class="pill">
+                <div>
+                  <div class="title">Seus itens</div>
+                  <div class="desc">O que você já comprou</div>
+                </div>
+                <button class="btn btnSmall" id="btnSellHint">ℹ️</button>
+              </div>
+              <div class="list" id="ownedList"></div>
+              <div class="tiny">Obs: por enquanto não tem venda (só compra). Dá pra adicionar depois.</div>
+            </div>
+
+            <!-- HISTÓRICO -->
+            <div class="panel" id="tabHistorico">
+              <div class="pill">
+                <div>
+                  <div class="title">Histórico de Temporadas</div>
+                  <div class="desc">A “temporada atual” zera quando começa a próxima</div>
+                </div>
+                <span class="tag" id="histTag">📚 0 temporadas</span>
+              </div>
+
+              <div class="box">
+                <div class="boxTitle">Temporada atual (estatísticas)</div>
+                <div class="boxSub">Isso zera quando a temporada fecha</div>
+                <div class="boxMid" id="currentStatsLine"></div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="list" id="historyList"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // =========================
+  // LIGAS (ATUAIS)
+  // =========================
+  const BRASILEIRAO = [
+    "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
+    "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
+  ];
+
+  const PREMIER = [
+    "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
+    "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
+  ];
+
+  const LEAGUES = [
+    { id:"BR", name:"Brasileirão", currency:"R$", teams: BRASILEIRAO, repWeight: 1.00 },
+    { id:"EN", name:"Premier League", currency:"£", teams: PREMIER, repWeight: 1.20 }
+  ];
+
+  const POSITIONS = [
+    { id:"ATA", label:"Centroavante", weights:{PAC:0.22, SHO:0.38, PAS:0.18, DEF:0.06, PHY:0.16} },
+    { id:"PE",  label:"Ponta Esquerda", weights:{PAC:0.30, SHO:0.26, PAS:0.22, DEF:0.07, PHY:0.15} },
+    { id:"PD",  label:"Ponta Direita", weights:{PAC:0.30, SHO:0.26, PAS:0.22, DEF:0.07, PHY:0.15} },
+    { id:"MEI", label:"Armador", weights:{PAC:0.18, SHO:0.20, PAS:0.36, DEF:0.10, PHY:0.16} },
+    { id:"VOL", label:"Volante", weights:{PAC:0.16, SHO:0.12, PAS:0.22, DEF:0.28, PHY:0.22} },
+    { id:"ZAG", label:"Zagueiro", weights:{PAC:0.12, SHO:0.06, PAS:0.16, DEF:0.42, PHY:0.24} },
+    { id:"LAT", label:"Lateral", weights:{PAC:0.26, SHO:0.10, PAS:0.24, DEF:0.24, PHY:0.16} },
+    { id:"GOL", label:"Goleiro", weights:{PAC:0.05, SHO:0.03, PAS:0.07, DEF:0.70, PHY:0.15} }
+  ];
+
+  const DIFF = {
+    FACIL:   { playMul: 1.10, growthMul: 1.15, injuryMul: 0.70 },
+    MEDIO:   { playMul: 1.00, growthMul: 1.00, injuryMul: 1.00 },
+    DIFICIL: { playMul: 0.90, growthMul: 0.85, injuryMul: 1.35 }
+  };
+
+  // Loja
+  const SHOP_ITEMS = [
+    { id:"car_popular", type:"Carro", name:"Carro Popular", price: 65000 },
+    { id:"car_esportivo", type:"Carro", name:"Carro Esportivo", price: 420000 },
+    { id:"suv_luxo", type:"Carro", name:"SUV de Luxo", price: 780000 },
+
+    { id:"ap_pequeno", type:"Casa", name:"Apartamento Pequeno", price: 220000 },
+    { id:"casa_media", type:"Casa", name:"Casa Média", price: 650000 },
+    { id:"mansao", type:"Casa", name:"Mansão", price: 6500000 },
+
+    { id:"terreno", type:"Terreno", name:"Terreno (1 lote)", price: 120000 },
+    { id:"fazenda", type:"Terreno", name:"Fazenda", price: 9500000 },
+
+    { id:"iate", type:"Luxo", name:"Iate", price: 12000000 },
+    { id:"jato", type:"Luxo", name:"Jato Particular", price: 75000000 },
+    { id:"helicoptero", type:"Luxo", name:"Helicóptero", price: 28000000 }
+  ];
+
+  // =========================
+  // UTIL
+  // =========================
+  const $ = (id) => document.getElementById(id);
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function choice(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function formatBRL(n){ return "R$ " + Math.round(n).toLocaleString("pt-BR"); }
+
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(window.__toastT);
+    window.__toastT = setTimeout(()=> t.classList.remove("show"), 1800);
+  }
+
+  function leagueInfo(id){ return LEAGUES.find(l => l.id === id) || LEAGUES[0]; }
+  function posInfo(id){ return POSITIONS.find(p => p.id === id) || POSITIONS[0]; }
+
+  // =========================
+  // ESTADO
+  // =========================
+  const STORAGE_KEY = "mcj_save_v3_realista";
+
+  let state = {
+    createdAt: Date.now(),
+    season: 1,
+    week: 1,
+    weeksPerSeason: 38,
+    midWindowWeek: 19,
+
+    news: [],
+    newsMax: 8, // ✅ limpa automaticamente
+
+    offers: [],
+    objectives: [],
+
+    history: [], // temporadas passadas
+
+    player: null
+  };
+
+  // =========================
+  // NOTÍCIAS (limpa)
+  // =========================
+  function addNews(text){
+    state.news.unshift({ t: Date.now(), text });
+    state.news = state.news.slice(0, state.newsMax);
+  }
+
+  // =========================
+  // ATRIBUTOS / OVERALL
+  // =========================
+  function genAttributes(baseType, age){
+    // Base: 45–75 | Profissional: 55–86
+    const ageBoost = (age - 15) * 2; // 0..6
+    const baseMin = baseType === "Base" ? 45 : 55;
+    const baseMax = baseType === "Base" ? 75 : 86;
+
+    const PAC = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
+    const SHO = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
+    const PAS = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
+    const DEF = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
+    const PHY = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
+
+    return { PAC, SHO, PAS, DEF, PHY };
+  }
+
+  function calcOverallFromAttrs(positionId, attrs){
+    const w = posInfo(positionId).weights;
+    const o = attrs.PAC*w.PAC + attrs.SHO*w.SHO + attrs.PAS*w.PAS + attrs.DEF*w.DEF + attrs.PHY*w.PHY;
+    return clamp(Math.round(o), 35, 99);
+  }
+
+  function genPotential(ovr){
+    return clamp(ovr + randInt(6, 18), 60, 95);
+  }
+
+  // =========================
+  // REGRAS INICIAIS
+  // =========================
+  function decideStartTypeByAge(age){
+    const baseChance = age === 15 ? 0.85 : age === 16 ? 0.70 : age === 17 ? 0.45 : 0.25;
+    return (Math.random() < baseChance) ? "Base" : "Profissional";
+  }
+  function decideStartLeagueByNat(nationality){
+    if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
+    if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
+    return (Math.random() < 0.55) ? "EN" : "BR";
+  }
+  function genSalary(startType){
+    if(startType === "Base") return randInt(5000, 15000);
+    return randInt(40000, 120000);
+  }
+  function genContractWeeks(startType){
+    return (startType === "Base") ? randInt(26, 104) : randInt(52, 156);
+  }
+  function calcReleaseClause(weeklySalary, startType){
+    const factor = startType === "Base" ? randInt(60, 120) : randInt(80, 180);
+    return clamp(Math.round((weeklySalary * factor)/1000)*1000, 200000, 50000000);
+  }
+  function calcSigningBonus(weeklySalary, rep){
+    const w = randInt(2, 10);
+    const mult = 1 + (rep/250);
+    return clamp(Math.round((weeklySalary * w * mult)/1000)*1000, 10000, 8000000);
+  }
+  function baseReputation(startType, leagueId){
+    const base = startType === "Base" ? randInt(8, 22) : randInt(18, 40);
+    const l = leagueInfo(leagueId);
+    return clamp(Math.round(base * l.repWeight), 1, 100);
+  }
+  function genPosition(sel){
+    if(sel && sel !== "AUTO") return sel;
+    return choice(POSITIONS).id;
+  }
+
+  // =========================
+  // OBJETIVOS DO TÉCNICO
+  // =========================
+  function buildObjectives(){
+    const p = state.player;
+    if(!p) return;
+
+    // alvos variam por posição e reputação/overall
+    const level = clamp(Math.round((p.overall + p.reputation)/2), 35, 95);
+
+    const gTarget = p.position === "GOL" ? 0 : clamp(Math.round(6 + (level-50)/8), 3, 18);
+    const aTarget = ["MEI","PE","PD","LAT"].includes(p.position) ? clamp(Math.round(4 + (level-50)/10), 2, 14) : clamp(Math.round(2 + (level-50)/14), 1, 10);
+    const ratingTarget = clamp(6.9 + (level-50)/120, 6.8, 7.8);
+
+    const csTarget = p.position === "GOL" ? clamp(Math.round(8 + (level-50)/8), 6, 18) : null;
+    const matchesTarget = clamp(Math.round(18 + (level-45)/3), 16, 30);
+
+    const rewardBase = clamp(25000 + level*2500, 50000, 350000);
+    const repReward = clamp(Math.round(2 + (level-50)/18), 2, 8);
+
+    const list = [];
+
+    list.push({
+      id:"obj_matches",
+      title:`Jogar ${matchesTarget} partidas`,
+      kind:"matches",
+      target: matchesTarget,
+      rewardMoney: Math.round(rewardBase*0.7),
+      rewardRep: Math.max(1, Math.round(repReward*0.6)),
+      done:false
+    });
+
+    if(p.position === "GOL"){
+      list.push({
+        id:"obj_cs",
+        title:`Fazer ${csTarget} clean sheets`,
+        kind:"cleanSheets",
+        target: csTarget,
+        rewardMoney: Math.round(rewardBase*0.95),
+        rewardRep: repReward,
+        done:false
+      });
+    } else {
+      list.push({
+        id:"obj_goals",
+        title:`Marcar ${gTarget} gols`,
+        kind:"goals",
+        target: gTarget,
+        rewardMoney: Math.round(rewardBase*0.95),
+        rewardRep: repReward,
+        done:false
+      });
+      list.push({
+        id:"obj_assists",
+        title:`Dar ${aTarget} assistências`,
+        kind:"assists",
+        target: aTarget,
+        rewardMoney: Math.round(rewardBase*0.75),
+        rewardRep: Math.max(1, Math.round(repReward*0.7)),
+        done:false
+      });
+    }
+
+    list.push({
+      id:"obj_rating",
+      title:`Terminar com nota média ≥ ${ratingTarget.toFixed(2)}`,
+      kind:"avgRating",
+      target: Number(ratingTarget.toFixed(2)),
+      rewardMoney: Math.round(rewardBase*0.85),
+      rewardRep: Math.max(2, repReward),
+      done:false
+    });
+
+    state.objectives = list;
+  }
+
+  function evalObjectivesEndSeason(){
+    const p = state.player;
+    if(!p) return;
+
+    let gainedMoney = 0;
+    let gainedRep = 0;
+
+    for(const o of state.objectives){
+      let ok = false;
+      if(o.kind === "matches") ok = p.seasonStats.matches >= o.target;
+      if(o.kind === "goals") ok = p.seasonStats.goals >= o.target;
+      if(o.kind === "assists") ok = p.seasonStats.assists >= o.target;
+      if(o.kind === "cleanSheets") ok = p.seasonStats.cleanSheets >= o.target;
+      if(o.kind === "avgRating") ok = p.seasonStats.avgRating >= o.target;
+
+      o.done = ok;
+
+      if(ok){
+        gainedMoney += o.rewardMoney;
+        gainedRep += o.rewardRep;
+      }
+    }
+
+    if(gainedMoney > 0){
+      p.wallet += gainedMoney;
+      addNews(`🎯 Objetivos cumpridos! Bônus: ${formatBRL(gainedMoney)} + Reputação +${gainedRep}.`);
+      toast("Objetivos pagos!");
+    } else {
+      addNews("🎯 Objetivos não foram cumpridos nesta temporada.");
+    }
+
+    p.reputation = clamp(p.reputation + gainedRep, 1, 100);
+  }
+
+  // =========================
+  // BANCO (Santander)
+  // =========================
+  function bankTickWeekly(){
+    const p = state.player;
+    if(!p) return;
+
+    // 1% por semana (juros compostos)
+    if(p.bank.invested > 0){
+      const interest = p.bank.invested * 0.01;
+      p.bank.invested += interest;
+      p.bank.totalInterest += interest;
+      p.bank.lastInterest = interest;
+    } else {
+      p.bank.lastInterest = 0;
+    }
+  }
+
+  function invest(amount){
+    const p = state.player;
+    if(!p) return;
+    amount = Math.max(0, Math.floor(amount));
+    if(amount <= 0) return toast("Digite um valor válido.");
+    if(amount > p.wallet) return toast("Você não tem esse dinheiro.");
+
+    p.wallet -= amount;
+    p.bank.invested += amount;
+    addNews(`🏦 Santander: você investiu ${formatBRL(amount)}.`);
+    toast("Investido!");
+    render();
+  }
+
+  function withdraw(amount){
+    const p = state.player;
+    if(!p) return;
+    amount = Math.max(0, Math.floor(amount));
+    if(amount <= 0) return toast("Digite um valor válido.");
+    if(amount > p.bank.invested) return toast("Você não tem esse valor investido.");
+
+    p.bank.invested -= amount;
+    p.wallet += amount;
+    addNews(`🏦 Santander: você resgatou ${formatBRL(amount)}.`);
+    toast("Resgatado!");
+    render();
+  }
+
+  // =========================
+  // GERAR JOGADOR
+  // =========================
+  function generatePlayer(){
+    const name = ($("inpName").value || "Jogador").trim();
+    const nat = $("selNat").value;
+    const diff = $("selDiff").value;
+    const leagueChoice = $("selStartLeague").value;
+    const typeChoice = $("selStartType").value;
+
+    const age = randInt(15, 18);
+    const startType = (typeChoice === "AUTO") ? decideStartTypeByAge(age) : typeChoice;
+
+    const leagueId = (leagueChoice === "AUTO") ? decideStartLeagueByNat(nat) : leagueChoice;
+
+    const position = genPosition($("selPos").value);
+
+    const weeklySalary = genSalary(startType);
+    const attrs = genAttributes(startType, age);
+    const overall = calcOverallFromAttrs(position, attrs);
+    const potential = genPotential(overall);
+
+    const rep = baseReputation(startType, leagueId);
+    const contractWeeks = genContractWeeks(startType);
+    const releaseClause = calcReleaseClause(weeklySalary, startType);
+
+    state.player = {
+      name, nationality:nat, difficulty:diff,
+      age, position,
+      type: startType,
+
+      attrs,
+      overall,
+      potential,
+
+      leagueId,
+      leagueName: leagueInfo(leagueId).name,
+      club: null, // vai escolher
+
+      weeklySalary,
+      contractWeeks,
+      releaseClause,
+
+      morale: randInt(60, 90),
+      fitness: randInt(70, 95),
+      reputation: rep,
+
+      injuredWeeks: 0,
+
+      wallet: 0,
+
+      bank: {
+        name: "Santander",
+        invested: 0,
+        totalInterest: 0,
+        lastInterest: 0
+      },
+
+      owned: [], // itens comprados
+
+      // stats por temporada atual (zera ao finalizar)
+      seasonStats: {
+        matches: 0,
+        goals: 0,
+        assists: 0,
+        cleanSheets: 0,
+        avgRating: 6.6
+      },
+
+      careerStats: {
+        matches: 0,
+        goals: 0,
+        assists: 0,
+        cleanSheets: 0
+      },
+
+      seasonStartOverall: overall,
+      seasonStartRep: rep
+    };
+
+    state.season = 1;
+    state.week = 1;
+    state.news = [];
+    state.offers = [];
+    state.history = [];
+    state.objectives = [];
+
+    addNews(`🎲 Jogador gerado: ${name} (${nat}), ${age} anos, ${position} • Overall ${overall}.`);
+    addNews(`Atributos: PAC ${attrs.PAC}, SHO ${attrs.SHO}, PAS ${attrs.PAS}, DEF ${attrs.DEF}, PHY ${attrs.PHY}.`);
+    addNews(`Agora escolha seu clube inicial (3 opções).`);
+    toast("Jogador gerado!");
+    render();
+  }
+
+  // =========================
+  // ESCOLHA ENTRE 3 CLUBES
+  // =========================
+  let clubPick = { options:[], selectedIndex: null };
+
+  function buildClubPickOptions(){
+    const p = state.player;
+    if(!p) return;
+
+    const l = leagueInfo(p.leagueId);
+
+    // 3 clubes diferentes
+    const picks = new Set();
+    while(picks.size < 3){
+      picks.add(choice(l.teams));
+    }
+    const options = [...picks].map((clubName, i)=>{
+      // clubes “melhores” aleatoriamente pagam um pouco mais
+      const strength = randInt(50, 95);
+      const salaryMul = 0.85 + (strength/200); // ~1.10 max
+      const repMul = 0.85 + (strength/220);    // ~1.28 max
+      const salary = Math.round(p.weeklySalary * salaryMul / 1000) * 1000;
+
+      return {
+        club: clubName,
+        leagueId: p.leagueId,
+        leagueName: l.name,
+        strength,
+        weeklySalary: clamp(salary, 5000, 350000),
+        repBoost: clamp(Math.round((p.reputation * repMul) - p.reputation), 0, 18)
+      };
+    });
+
+    clubPick.options = options;
+    clubPick.selectedIndex = null;
+  }
+
+  function showClubPick(){
+    buildClubPickOptions();
+    const p = state.player;
+    const l = leagueInfo(p.leagueId);
+
+    $("pickHint").innerHTML = `Você vai começar na liga <b>${l.name}</b>. Escolha 1 clube para iniciar sua carreira.`;
+
+    const box = $("clubPickList");
+    box.innerHTML = "";
+    clubPick.options.forEach((o, idx)=>{
+      const el = document.createElement("div");
+      el.className = "box";
+      el.style.cursor = "pointer";
+      el.innerHTML = `
+        <div class="boxTitle">🏟️ ${o.club}</div>
+        <div class="boxSub">${o.leagueName} • Força estimada ${o.strength}</div>
+        <div class="boxMid">
+          <span>💰 Salário: <b>${formatBRL(o.weeklySalary)}/sem</b></span>
+          <span>🏅 Bônus reputação: <b>+${o.repBoost}</b></span>
+        </div>
+        <div class="tiny">Clique para selecionar</div>
+      `;
+      el.addEventListener("click", ()=>{
+        clubPick.selectedIndex = idx;
+        [...box.children].forEach(c => c.style.outline = "none");
+        el.style.outline = "2px solid rgba(31,242,154,.45)";
+        $("btnConfirmPick").disabled = false;
+      });
+      box.appendChild(el);
+    });
+
+    $("btnConfirmPick").disabled = true;
+    showScreen("screenClubPick");
+  }
+
+  function confirmClubPick(){
+    const p = state.player;
+    if(!p) return;
+    const idx = clubPick.selectedIndex;
+    if(idx === null) return toast("Selecione um clube.");
+
+    const o = clubPick.options[idx];
+    p.club = o.club;
+    p.weeklySalary = o.weeklySalary;
+    p.reputation = clamp(p.reputation + o.repBoost, 1, 100);
+
+    // reajusta multa no começo
+    p.releaseClause = calcReleaseClause(p.weeklySalary, p.type);
+
+    // objetivos da temporada 1
+    buildObjectives();
+
+    addNews(`✅ Clube escolhido: ${p.club} (${o.leagueName}). Salário: ${formatBRL(p.weeklySalary)}/sem.`);
+    addNews(`🎯 Objetivos da temporada foram definidos.`);
+    toast("Carreira iniciada!");
+    showScreen("screenGame");
+    render();
+  }
+
+  // =========================
+  // SIMULAÇÃO
+  // =========================
+  function payWeeklySalary(){
+    const p = state.player;
+    p.wallet += p.weeklySalary;
+    p.contractWeeks = Math.max(0, p.contractWeeks - 1);
+  }
+
+  function injuryCheck(){
+    const p = state.player;
+    if(p.injuredWeeks > 0) return;
+
+    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+    const base = 0.012 * d.injuryMul;
+    const fitnessRisk = clamp((60 - p.fitness) / 120, 0, 0.20);
+    const hardPlayRisk = (Math.random() < 0.15) ? 0.01 : 0.0;
+    const chance = clamp(base + fitnessRisk + hardPlayRisk, 0.004, 0.12);
+
+    if(Math.random() < chance){
+      const weeks = clamp(randInt(1, 7) + (p.fitness < 55 ? 2 : 0), 1, 10);
+      p.injuredWeeks = weeks;
+      p.morale = clamp(p.morale - randInt(4, 10), 0, 100);
+      addNews(`🩹 Lesão! Fora por ${weeks} semana(s).`);
+      toast("Lesão!");
+    }
+  }
+
+  function recoveryTick(){
+    const p = state.player;
+    if(p.injuredWeeks > 0){
+      p.injuredWeeks -= 1;
+      p.fitness = clamp(p.fitness + randInt(8, 16), 0, 100);
+      if(p.injuredWeeks === 0){
+        addNews("✅ Recuperado da lesão! Apto para jogar.");
+        toast("Recuperado!");
+      } else {
+        addNews(`🩹 Recuperação: faltam ${p.injuredWeeks} semana(s).`);
+      }
+    }
+  }
+
+  function canPlay(){
+    const p = state.player;
+    return p.injuredWeeks === 0;
+  }
+
+  function playChance(){
+    const p = state.player;
+    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+
+    const base = clamp((p.fitness + p.morale) / 200, 0.35, 0.92);
+    const roleMul = (p.type === "Base") ? 0.88 : 1.0;
+    const repMul = clamp(0.85 + (p.reputation/300), 0.85, 1.15);
+    return clamp(base * roleMul * repMul * d.playMul, 0.15, 0.97);
+  }
+
+  function expectedGoalAssistProbs(){
+    const p = state.player;
+    const skill = p.overall / 100;
+
+    // usando atributos pra ficar mais realista
+    const shot = p.attrs.SHO / 100;
+    const pass = p.attrs.PAS / 100;
+    const pace = p.attrs.PAC / 100;
+
+    let goalP = (0.05 + skill*0.10) * (0.65 + shot*0.55) * (0.85 + pace*0.25);
+    let assistP = (0.04 + skill*0.09) * (0.65 + pass*0.55) * (0.85 + pace*0.20);
+
+    // posição ajusta
+    if(p.position === "ATA") { goalP *= 1.35; assistP *= 0.75; }
+    if(["PE","PD"].includes(p.position)) { goalP *= 1.05; assistP *= 1.10; }
+    if(p.position === "MEI") { goalP *= 0.78; assistP *= 1.38; }
+    if(p.position === "VOL") { goalP *= 0.55; assistP *= 0.85; }
+    if(p.position === "ZAG") { goalP *= 0.22; assistP *= 0.30; }
+    if(p.position === "LAT") { goalP *= 0.38; assistP *= 0.90; }
+    if(p.position === "GOL"){
+      goalP = 0.003;
+      assistP = 0.008;
+    }
+
+    // moral/físico
+    goalP *= clamp(0.85 + (p.fitness/250) + (p.morale/350), 0.70, 1.25);
+    assistP *= clamp(0.85 + (p.fitness/260) + (p.morale/360), 0.70, 1.25);
+
+    return { goalP: clamp(goalP, 0, 0.55), assistP: clamp(assistP, 0, 0.45) };
+  }
+
+  function updateReputationFromMatch(rating, played){
+    const p = state.player;
+    const l = leagueInfo(p.leagueId);
+    if(!played){
+      if(Math.random() < 0.30) p.reputation = clamp(p.reputation - 1, 1, 100);
+      return;
+    }
+    let delta = 0;
+    if(rating >= 8.4) delta += 3;
+    else if(rating >= 7.6) delta += 2;
+    else if(rating >= 7.0) delta += 1;
+    else if(rating <= 6.0) delta -= 1;
+
+    delta = Math.round(delta * l.repWeight);
+    p.reputation = clamp(p.reputation + delta, 1, 100);
+  }
+
+  function growthFromPerformance(rating){
+    const p = state.player;
+    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+    if(p.overall >= p.potential) return;
+
+    let chance = 0.10;
+    if(rating >= 8.4) chance += 0.22;
+    else if(rating >= 7.6) chance += 0.14;
+    else if(rating >= 7.0) chance += 0.06;
+
+    chance *= clamp(0.75 + (p.morale/220) + (p.fitness/260), 0.60, 1.55);
+    chance *= d.growthMul;
+    if(p.type === "Base") chance *= 1.10;
+
+    chance = clamp(chance, 0.02, 0.65);
+
+    if(Math.random() < chance){
+      const inc = (rating >= 8.4) ? randInt(1,2) : (rating >= 7.6 ? 1 : (Math.random() < 0.35 ? 1 : 0));
+      if(inc > 0){
+        // melhora overall + alguns atributos
+        p.attrs.PAC = clamp(p.attrs.PAC + randInt(0,1), 35, 99);
+        p.attrs.SHO = clamp(p.attrs.SHO + randInt(0,1), 35, 99);
+        p.attrs.PAS = clamp(p.attrs.PAS + randInt(0,1), 35, 99);
+        p.attrs.DEF = clamp(p.attrs.DEF + randInt(0,1), 35, 99);
+        p.attrs.PHY = clamp(p.attrs.PHY + randInt(0,1), 35, 99);
+
+        // puxa mais pro atributo dominante da posição
+        const pos = posInfo(p.position);
+        const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1])[0][0];
+        p.attrs[dom] = clamp(p.attrs[dom] + 1, 35, 99);
+
+        p.overall = calcOverallFromAttrs(p.position, p.attrs);
+        addNews(`📈 Evolução: overall agora ${p.overall} (atributos melhoraram).`);
+      }
+    }
+  }
+
+  function matchSimulation(){
+    const p = state.player;
+
+    if(!canPlay()){
+      addNews(`🚫 Lesionado: você não pode jogar nesta semana.`);
+      return { played:false, rating:null };
+    }
+
+    const played = Math.random() < playChance();
+
+    if(!played){
+      p.fitness = clamp(p.fitness + randInt(2, 6), 0, 100);
+      p.morale = clamp(p.morale - randInt(0, 2), 0, 100);
+      addNews(`Você ficou no banco/fora no ${p.club}.`);
+      updateReputationFromMatch(0, false);
+      return { played:false, rating:null };
+    }
+
+    // stats temporada e carreira
+    p.seasonStats.matches += 1;
+    p.careerStats.matches += 1;
+
+    const { goalP, assistP } = expectedGoalAssistProbs();
+    const g = (Math.random() < goalP) ? 1 : 0;
+    const a = (Math.random() < assistP) ? 1 : 0;
+
+    let cs = 0;
+    if(p.position === "GOL"){
+      const baseCS = clamp(0.20 + (p.overall/250) + (p.reputation/450), 0.15, 0.65);
+      cs = (Math.random() < baseCS) ? 1 : 0;
+      p.seasonStats.cleanSheets += cs;
+      p.careerStats.cleanSheets += cs;
+    } else {
+      p.seasonStats.goals += g;
+      p.seasonStats.assists += a;
+      p.careerStats.goals += g;
+      p.careerStats.assists += a;
+    }
+
+    // rating
+    const skill = p.overall / 100;
+    let rating = 6.15 + skill * 2.25
+      + (g ? 0.85 : 0)
+      + (a ? 0.55 : 0)
+      + (cs ? 0.60 : 0)
+      + (Math.random()*0.6 - 0.3);
+
+    if(["ZAG","VOL","LAT"].includes(p.position) && !g && !a){
+      if(Math.random() < 0.20 + skill*0.25) rating += 0.25;
+    }
+
+    rating = clamp(rating, 5.4, 9.7);
+
+    // média móvel por temporada atual
+    p.seasonStats.avgRating = (p.seasonStats.avgRating * 0.88) + (rating * 0.12);
+
+    // desgaste
+    p.fitness = clamp(p.fitness - randInt(6, 14), 0, 100);
+
+    // moral
+    p.morale = clamp(p.morale + (rating >= 7.2 ? randInt(2,5) : rating <= 6.2 ? -randInt(1,4) : randInt(0,2)), 0, 100);
+
+    updateReputationFromMatch(rating, true);
+    growthFromPerformance(rating);
+
+    const parts = [];
+    if(p.position === "GOL"){
+      if(cs) parts.push("🧤 Clean sheet!");
+    } else {
+      if(g) parts.push("⚽ Gol!");
+      if(a) parts.push("🅰️ Assistência!");
+    }
+    if(parts.length === 0) parts.push("Jogo ok.");
+
+    addNews(`${parts.join(" ")} Nota: ${rating.toFixed(1)} • ${p.club} (${p.leagueName}).`);
+    return { played:true, rating };
+  }
+
+  function midSeasonWindowIfNeeded(){
+    if(state.week !== state.midWindowWeek) return;
+    addNews(`🪟 Janela aberta! Chegaram novas propostas.`);
+    generateOffers("MID");
+    toast("Janela aberta!");
+  }
+
+  function endContractWarning(){
+    const p = state.player;
+    if(p.contractWeeks === 0){
+      addNews("📝 Seu contrato acabou! Renove ou espere propostas.");
+    } else if(p.contractWeeks <= 10){
+      addNews(`📝 Contrato termina em ${p.contractWeeks} semanas.`);
+    }
+  }
+
+  function playWeek(){
+    const p = state.player;
+    if(!p || !p.club){
+      toast("Crie um jogador e escolha o clube.");
+      return;
+    }
+
+    // salário e contrato
+    payWeeklySalary();
+
+    // Banco Santander rende 1%/sem
+    bankTickWeekly();
+    if(p.bank.lastInterest > 0){
+      addNews(`🏦 Santander: rendimento +${formatBRL(p.bank.lastInterest)} (1%).`);
+    }
+
+    // recuperação/lesão
+    recoveryTick();
+    injuryCheck();
+
+    // jogo
+    matchSimulation();
+
+    // janela
+    midSeasonWindowIfNeeded();
+
+    // aviso de contrato
+    endContractWarning();
+
+    // avançar semana
+    state.week += 1;
+    if(state.week > state.weeksPerSeason){
+      endSeason();
+      return;
+    }
+
+    render();
+  }
+
+  function train(){
+    const p = state.player;
+    if(!p || !p.club) return;
+
+    if(p.injuredWeeks > 0){
+      addNews("🏥 Lesionado: treino virou fisioterapia.");
+      p.fitness = clamp(p.fitness + randInt(6, 14), 0, 100);
+      p.morale = clamp(p.morale + randInt(0, 2), 0, 100);
+      render();
+      return;
+    }
+
+    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+
+    const fatigue = randInt(4, 10);
+    p.fitness = clamp(p.fitness - fatigue, 0, 100);
+
+    let gainChance = clamp(0.22 + (p.morale/320) + (p.fitness/460), 0.18, 0.65);
+    gainChance *= d.growthMul;
+    if(p.type === "Base") gainChance *= 1.08;
+
+    if(p.overall < p.potential && Math.random() < gainChance){
+      // melhora 1-2 atributos focados
+      const pos = posInfo(p.position);
+      const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+      dom.forEach(k => p.attrs[k] = clamp(p.attrs[k] + randInt(0,1), 35, 99));
+      // chance de +1 em outro
+      const keys = ["PAC","SHO","PAS","DEF","PHY"];
+      p.attrs[choice(keys)] = clamp(p.attrs[choice(keys)] + (Math.random()<0.5?1:0), 35, 99);
+
+      const newOvr = calcOverallFromAttrs(p.position, p.attrs);
+      if(newOvr > p.overall){
+        p.overall = newOvr;
+        addNews(`🏋️ Treino forte! Overall subiu para ${p.overall}.`);
+      } else {
+        addNews("🏋️ Treino bom. Mantendo o ritmo.");
+      }
+    } else {
+      addNews("🏋️ Treino feito. Mantendo o ritmo.");
+    }
+
+    p.morale = clamp(p.morale + randInt(0, 3), 0, 100);
+    if(Math.random() < 0.18) p.reputation = clamp(p.reputation + 1, 1, 100);
+
+    render();
+  }
+
+  function rest(){
+    const p = state.player;
+    if(!p || !p.club) return;
+
+    if(p.injuredWeeks > 0){
+      addNews("🛌 Descanso + tratamento: recuperação acelerada.");
+      p.fitness = clamp(p.fitness + randInt(12, 24), 0, 100);
+      p.morale = clamp(p.morale + randInt(1, 4), 0, 100);
+      render();
+      return;
+    }
+
+    p.fitness = clamp(p.fitness + randInt(10, 22), 0, 100);
+    p.morale = clamp(p.morale + randInt(1, 4), 0, 100);
+    addNews("🛌 Descanso: físico e moral melhoraram.");
+    render();
+  }
+
+  // =========================
+  // PROPOSTAS / NEGOCIAÇÕES
+  // =========================
+  function genProject(){
+    const opts = [
+      "Titularidade rápida",
+      "Projeto jovem",
+      "Time competitivo",
+      "Reconstrução do elenco",
+      "Chance de ser estrela",
+      "Foco em títulos"
+    ];
+    return choice(opts);
+  }
+
+  function pickOfferLeague(){
+    const p = state.player;
+    return (Math.random() < 0.70) ? p.leagueId : (p.leagueId === "BR" ? "EN" : "BR");
+  }
+
+  function genOfferClub(excludeKeySet){
+    const leagueId = pickOfferLeague();
+    const league = leagueInfo(leagueId);
+    let club = choice(league.teams);
+    let tries = 0;
+    while(excludeKeySet.has(club + "|" + leagueId) && tries < 18){
+      club = choice(league.teams);
+      tries++;
+    }
+    return { leagueId, leagueName: league.name, club };
+  }
+
+  function genOfferSalary(){
+    const p = state.player;
+    const league = leagueInfo(p.leagueId);
+
+    // salarial baseado em overall + reputação + “tamanho” de liga
+    const base = 32000 + (p.overall * 1400) + (p.reputation * 650);
+    const leagueJitter = (league.id === "EN") ? randInt(0, 30000) : randInt(-5000, 15000);
+    const jitter = randInt(-15000, 28000) + leagueJitter;
+
+    const min = (p.type === "Base") ? 12000 : 25000;
+    const max = 350000;
+
+    return clamp(Math.round((base + jitter)/1000)*1000, min, max);
+  }
+
+  function genOfferContractWeeks(){
+    const p = state.player;
+    const base = randInt(52, 208);
+    const bonus = (p.reputation >= 70 ? 26 : 0);
+    return clamp(base + bonus, 26, 260);
+  }
+
+  function generateOffers(windowType){
+    const p = state.player;
+    if(!p) return;
+
+    const label = (windowType === "MID") ? "Janela (Meio)" : "Fim de temporada";
+    const offersCount = (windowType === "MID") ? randInt(2, 4) : randInt(3, 5);
+
+    const used = new Set([p.club + "|" + p.leagueId]);
+
+    if(windowType === "MID"){
+      state.offers.forEach(o => used.add(o.club + "|" + o.leagueId));
+    } else {
+      state.offers = [];
+    }
+
+    for(let i=0;i<offersCount;i++){
+      const pick = genOfferClub(used);
+      const key = pick.club + "|" + pick.leagueId;
+      if(used.has(key)){ i--; continue; }
+      used.add(key);
+
+      const weeklySalary = genOfferSalary();
+      const contractWeeks = genOfferContractWeeks();
+      const signingBonus = calcSigningBonus(weeklySalary, p.reputation);
+      const releaseClause = calcReleaseClause(weeklySalary, "Profissional");
+
+      state.offers.push({
+        leagueId: pick.leagueId,
+        leagueName: pick.leagueName,
+        club: pick.club,
+        weeklySalary,
+        contractWeeks,
+        signingBonus,
+        releaseClause,
+        project: genProject(),
+        windowLabel: label
+      });
+    }
+
+    addNews(`📨 Você recebeu ${offersCount} proposta(s) — ${label}.`);
+    render();
+  }
+
+  function acceptOffer(idx){
+    const p = state.player;
+    const o = state.offers[idx];
+    if(!p || !o) return;
+
+    p.wallet += o.signingBonus;
+
+    p.club = o.club;
+    p.leagueId = o.leagueId;
+    p.leagueName = o.leagueName;
+
+    p.weeklySalary = o.weeklySalary;
+    p.contractWeeks = o.contractWeeks;
+    p.releaseClause = o.releaseClause;
+
+    if(p.type === "Base" && (p.age >= 16 || p.weeklySalary >= 40000)){
+      p.type = "Profissional";
+      addNews("🔵 Você agora é do PROFISSIONAL.");
+    }
+
+    p.reputation = clamp(p.reputation + randInt(1, 4), 1, 100);
+
+    addNews(`✅ Você assinou com ${o.club} (${o.leagueName})! Salário ${formatBRL(o.weeklySalary)}/sem • Luvas ${formatBRL(o.signingBonus)}.`);
+    state.offers = [];
+    render();
+    toast("Transferência feita!");
+  }
+
+  function renewContract(){
+    const p = state.player;
+    if(!p) return;
+
+    const urgency = (p.contractWeeks <= 10) ? 1.15 : (p.contractWeeks <= 26 ? 1.08 : 1.02);
+    const perf = 1 + (p.reputation/180) + (p.overall/250);
+    const raise = clamp(0.04 + (perf*0.06), 0.05, 0.22) * urgency;
+
+    const newSalary = clamp(Math.round((p.weeklySalary * (1 + raise))/1000)*1000, 5000, 450000);
+    const newWeeks = clamp(randInt(52, 182) + (p.reputation >= 70 ? 26 : 0), 26, 260);
+    const signingBonus = calcSigningBonus(newSalary, p.reputation);
+    const newClause = calcReleaseClause(newSalary, "Profissional");
+
+    state.offers.unshift({
+      leagueId: p.leagueId,
+      leagueName: p.leagueName,
+      club: p.club + " (Renovação)",
+      weeklySalary: newSalary,
+      contractWeeks: newWeeks,
+      signingBonus,
+      releaseClause: newClause,
+      project: "Renovação de contrato",
+      windowLabel: "Negociação"
+    });
+
+    addNews(`🔁 Renovação: ${formatBRL(newSalary)}/sem • ${newWeeks} semanas • Luvas ${formatBRL(signingBonus)}.`);
+    toast("Renovação criada!");
+    render();
+  }
+
+  // =========================
+  // LOJA
+  // =========================
+  function netWorth(){
+    const p = state.player;
+    if(!p) return 0;
+    let assets = 0;
+    for(const own of p.owned){
+      assets += own.price;
+    }
+    return assets;
+  }
+
+  function buyItem(itemId){
+    const p = state.player;
+    if(!p) return;
+
+    const item = SHOP_ITEMS.find(x=>x.id===itemId);
+    if(!item) return;
+
+    const already = p.owned.some(o=>o.id===itemId);
+    if(already) return toast("Você já comprou isso.");
+
+    if(p.wallet < item.price) return toast("Dinheiro insuficiente.");
+
+    p.wallet -= item.price;
+    p.owned.push({ ...item, boughtAt: Date.now() });
+
+    addNews(`🛒 Compra: ${item.name} por ${formatBRL(item.price)}.`);
+    toast("Comprado!");
+    render();
+  }
+
+  // =========================
+  // HISTÓRICO / FIM DE TEMPORADA
+  // =========================
+  function seasonSummaryToHistory(){
+    const p = state.player;
+    if(!p) return;
+
+    // salva snapshot da temporada encerrada
+    state.history.unshift({
+      season: state.season,
+      club: p.club,
+      league: p.leagueName,
+      age: p.age,
+      position: p.position,
+      overallStart: p.seasonStartOverall,
+      overallEnd: p.overall,
+      repStart: p.seasonStartRep,
+      repEnd: p.reputation,
+      stats: { ...p.seasonStats }
+    });
+
+    // limita histórico pra não pesar
+    state.history = state.history.slice(0, 20);
+  }
+
+  function seasonSummaryNews(){
+    const p = state.player;
+    const ovrGain = p.overall - p.seasonStartOverall;
+    const repGain = p.reputation - p.seasonStartRep;
+
+    const parts = [];
+    parts.push(`📊 Resumo T${state.season}: Jogos ${p.seasonStats.matches}, Gols ${p.seasonStats.goals}, Assists ${p.seasonStats.assists}, Nota ${p.seasonStats.avgRating.toFixed(2)}.`);
+    if(p.position === "GOL") parts.push(`Clean sheets ${p.seasonStats.cleanSheets}.`);
+    parts.push(`Overall ${p.seasonStartOverall}→${p.overall} (${ovrGain>=0?"+":""}${ovrGain}) • Reputação ${p.seasonStartRep}→${p.reputation} (${repGain>=0?"+":""}${repGain}).`);
+    addNews(parts.join(" "));
+  }
+
+  function resetSeasonStats(){
+    const p = state.player;
+    p.seasonStats = {
+      matches: 0,
+      goals: 0,
+      assists: 0,
+      cleanSheets: 0,
+      avgRating: 6.6
+    };
+  }
+
+  function endSeason(){
+    const p = state.player;
+    if(!p) return;
+
+    // paga objetivos e registra
+    evalObjectivesEndSeason();
+
+    // resumo e histórico
+    seasonSummaryNews();
+    seasonSummaryToHistory();
+
+    addNews(`🏁 Temporada ${state.season} encerrada! Gerando propostas...`);
+    generateOffers("END");
+
+    // próxima temporada
+    state.season += 1;
+    state.week = 1;
+
+    // envelhece
+    p.age = clamp(p.age + 1, 15, 40);
+
+    // promoção
+    if(p.type === "Base" && p.age >= 17 && Math.random() < 0.60){
+      p.type = "Profissional";
+      p.weeklySalary = clamp(p.weeklySalary, 40000, 120000);
+      addNews("🔵 Promoção: agora você é do PROFISSIONAL.");
+    }
+
+    // recuperação entre temporadas
+    p.fitness = clamp(p.fitness + randInt(12, 28), 0, 100);
+    p.morale = clamp(p.morale + randInt(2, 7), 0, 100);
+    p.injuredWeeks = 0;
+
+    // reset stats da temporada atual
+    resetSeasonStats();
+
+    // objetivos novos
+    p.seasonStartOverall = p.overall;
+    p.seasonStartRep = p.reputation;
+    buildObjectives();
+
+    render();
+    toast("Nova temporada!");
+  }
+
+  // =========================
+  // UI: TABS / RENDER
+  // =========================
+  function showScreen(which){
+    $("screenStart").classList.remove("active");
+    $("screenClubPick").classList.remove("active");
+    $("screenGame").classList.remove("active");
+    $(which).classList.add("active");
+  }
+
+  function setActiveTab(tabId){
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.classList.toggle("active", t.getAttribute("data-tab") === tabId);
+    });
+    document.querySelectorAll(".panel").forEach(p=>{
+      p.classList.toggle("active", p.id === tabId);
+    });
+  }
+
+  function renderPlayerPanel(){
+    const p = state.player;
+    if(!p){
+      $("playerPanel").innerHTML = `<div class="hint">Nenhum jogador criado ainda.</div>`;
+      return;
+    }
+
+    const roleTag = p.type === "Base" ? "🟢 Base" : "🔵 Profissional";
+    const pos = posInfo(p.position);
+    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+
+    const injuryLine = p.injuredWeeks > 0
+      ? `<span class="tag" style="border-color: rgba(255,93,93,.35)">🩹 Lesão: <b>${p.injuredWeeks} sem</b></span>`
+      : `<span class="tag">✅ Sem lesão</span>`;
+
+    $("playerPanel").innerHTML = `
+      <div class="pill">
+        <div>
+          <div class="title">${p.name}</div>
+          <div class="desc">${p.nationality} • ${p.age} anos • ${roleTag} • ${p.position} (${pos.label})</div>
+        </div>
+        <div class="big">${p.overall}</div>
+      </div>
+
+      <div class="row" style="margin-bottom:10px">
+        <span class="tag">🏟️ <b>${p.club || "Sem clube"}</b></span>
+        <span class="tag">🏆 <b>${p.leagueName}</b></span>
+        <span class="tag">🏅 Reputação: <b>${p.reputation}</b></span>
+      </div>
+
+      <div class="row">
+        <div class="col"><div class="tag">💰 Salário/sem: <b>${formatBRL(p.weeklySalary)}</b></div></div>
+        <div class="col"><div class="tag">🧾 Contrato: <b>${p.contractWeeks} sem</b></div></div>
+      </div>
+
+      <div class="row">
+        <div class="col"><div class="tag">💥 Multa: <b>${formatBRL(p.releaseClause)}</b></div></div>
+        <div class="col">${injuryLine}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="statGrid">
+        <div class="meter"><div><div class="k">PAC</div><div class="v">${p.attrs.PAC}</div></div><span class="tag">⚡</span></div>
+        <div class="meter"><div><div class="k">SHO</div><div class="v">${p.attrs.SHO}</div></div><span class="tag">🎯</span></div>
+        <div class="meter"><div><div class="k">PAS</div><div class="v">${p.attrs.PAS}</div></div><span class="tag">🅰️</span></div>
+        <div class="meter"><div><div class="k">DEF</div><div class="v">${p.attrs.DEF}</div></div><span class="tag">🛡️</span></div>
+        <div class="meter"><div><div class="k">PHY</div><div class="v">${p.attrs.PHY}</div></div><span class="tag">💪</span></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="col"><div class="tag">😄 Moral: <b>${p.morale}</b></div></div>
+        <div class="col"><div class="tag">⚡ Físico: <b>${p.fitness}</b></div></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tag">🏦 Carteira: <b>${formatBRL(p.wallet)}</b></div>
+      <div class="hint" style="margin-top:10px">
+        <b>Potencial:</b> ${p.potential}. Dificuldade: <b>${p.difficulty}</b> (jogar x${d.playMul.toFixed(2)}, evolução x${d.growthMul.toFixed(2)}, lesões x${d.injuryMul.toFixed(2)}).
+      </div>
+    `;
+  }
+
+  function renderSeason(){
+    $("seasonLine").textContent = `Temporada ${state.season} • Semana ${state.week}/${state.weeksPerSeason}`;
+    $("weekBig").textContent = state.week;
+
+    const mid = state.midWindowWeek;
+    const left = mid - state.week;
+    $("midTag").textContent = (state.week < mid)
+      ? `🪟 Janela: falta ${left} sem`
+      : (state.week === mid ? `🪟 Janela aberta (semana ${mid})` : `🪟 Janela já passou`);
+
+    $("newsTag").textContent = `📰 ${state.news.length}`;
+
+    const nl = $("newsList");
+    nl.innerHTML = "";
+    if(state.news.length === 0){
+      nl.innerHTML = `<div class="hint">Sem notificações.</div>`;
+    } else {
+      for(const n of state.news){
+        const d = new Date(n.t);
+        const hh = String(d.getHours()).padStart(2,"0");
+        const mm = String(d.getMinutes()).padStart(2,"0");
+        const item = document.createElement("div");
+        item.className = "box";
+        item.innerHTML = `<div class="boxTitle">${n.text}</div><div class="boxSub">${hh}:${mm}</div>`;
+        nl.appendChild(item);
+      }
+    }
+  }
+
+  function renderOffers(){
+    const ol = $("offersList");
+    ol.innerHTML = "";
+
+    if(state.offers.length === 0){
+      ol.innerHTML = `<div class="hint">Nenhuma proposta no momento.</div>`;
+      return;
+    }
+
+    state.offers.forEach((o, idx)=>{
+      const item = document.createElement("div");
+      item.className = "box";
+      item.innerHTML = `
+        <div class="boxTitle">${o.club}</div>
+        <div class="boxSub">${o.leagueName} • ${o.windowLabel}</div>
+        <div class="boxMid">
+          <span>💰 <b>${formatBRL(o.weeklySalary)}</b>/sem</span>
+          <span>🧾 <b>${o.contractWeeks}</b> sem</span>
+          <span>🤝 Luvas <b>${formatBRL(o.signingBonus)}</b></span>
+          <span>💥 Multa <b>${formatBRL(o.releaseClause)}</b></span>
+          <span>⭐ <b>${o.project}</b></span>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn btnSmall btnPrimary" data-accept="${idx}">Aceitar</button>
+        </div>
+      `;
+      ol.appendChild(item);
+    });
+
+    ol.querySelectorAll("[data-accept]").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        const idx = Number(e.currentTarget.getAttribute("data-accept"));
+        acceptOffer(idx);
+      });
+    });
+  }
+
+  function renderObjectives(){
+    const p = state.player;
+    const list = $("objList");
+    list.innerHTML = "";
+
+    if(!p){
+      $("objTag").textContent = "🎯 0/0";
+      list.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      return;
+    }
+
+    let done = 0;
+    for(const o of state.objectives){
+      // progresso
+      let prog = 0;
+      if(o.kind === "matches") prog = p.seasonStats.matches;
+      if(o.kind === "goals") prog = p.seasonStats.goals;
+      if(o.kind === "assists") prog = p.seasonStats.assists;
+      if(o.kind === "cleanSheets") prog = p.seasonStats.cleanSheets;
+      if(o.kind === "avgRating") prog = p.seasonStats.avgRating;
+
+      const okNow = (o.kind === "avgRating") ? (prog >= o.target) : (prog >= o.target);
+      if(okNow) done++;
+
+      const item = document.createElement("div");
+      item.className = "box";
+      item.innerHTML = `
+        <div class="boxTitle">${okNow ? "✅" : "🎯"} ${o.title}</div>
+        <div class="boxSub">Progresso: ${o.kind === "avgRating" ? prog.toFixed(2) : prog} / ${o.target}</div>
+        <div class="boxMid">
+          <span>💵 Recompensa <b>${formatBRL(o.rewardMoney)}</b></span>
+          <span>🏅 Reputação <b>+${o.rewardRep}</b></span>
+        </div>
+      `;
+      list.appendChild(item);
+    }
+
+    $("objTag").textContent = `🎯 ${done}/${state.objectives.length}`;
+  }
+
+  function renderBank(){
+    const p = state.player;
+    const box = $("bankMeters");
+    box.innerHTML = "";
+
+    if(!p){
+      box.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      return;
+    }
+
+    const meters = [
+      { k:"Carteira", v: formatBRL(p.wallet) },
+      { k:"Investido", v: formatBRL(p.bank.invested) },
+      { k:"Rendimento total", v: formatBRL(p.bank.totalInterest) },
+      { k:"Último rendimento", v: formatBRL(p.bank.lastInterest) },
+      { k:"Banco", v: p.bank.name }
+    ];
+
+    meters.forEach(m=>{
+      const el = document.createElement("div");
+      el.className = "meter";
+      el.innerHTML = `<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div><span class="tag">💳</span>`;
+      box.appendChild(el);
+    });
+  }
+
+  function renderShop(){
+    const p = state.player;
+    $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>${formatBRL(netWorth())}</b>`;
+
+    const shop = $("shopList");
+    shop.innerHTML = "";
+
+    if(!p){
+      shop.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      $("ownedList").innerHTML = `<div class="hint">Sem itens.</div>`;
+      return;
+    }
+
+    // lista de compra
+    SHOP_ITEMS.forEach(item=>{
+      const owned = p.owned.some(o=>o.id===item.id);
+      const el = document.createElement("div");
+      el.className = "box";
+      el.innerHTML = `
+        <div class="boxTitle">${owned ? "✅" : "🛒"} ${item.name}</div>
+        <div class="boxSub">${item.type} • Preço ${formatBRL(item.price)}</div>
+        <div class="boxMid">
+          <span>Saldo: <b>${formatBRL(p.wallet)}</b></span>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn btnSmall ${owned ? "" : "btnPrimary"}" ${owned ? "disabled" : ""} data-buy="${item.id}">
+            ${owned ? "Comprado" : "Comprar"}
+          </button>
+        </div>
+      `;
+      shop.appendChild(el);
+    });
+
+    shop.querySelectorAll("[data-buy]").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        const id = e.currentTarget.getAttribute("data-buy");
+        buyItem(id);
+      });
+    });
+
+    // itens comprados
+    const ownedList = $("ownedList");
+    ownedList.innerHTML = "";
+    if(p.owned.length === 0){
+      ownedList.innerHTML = `<div class="hint">Você ainda não comprou nada.</div>`;
+    } else {
+      p.owned.slice().reverse().forEach(o=>{
+        const el = document.createElement("div");
+        el.className = "box";
+        const d = new Date(o.boughtAt);
+        const dt = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+        el.innerHTML = `
+          <div class="boxTitle">🏷️ ${o.name}</div>
+          <div class="boxSub">${o.type} • ${formatBRL(o.price)} • comprado em ${dt}</div>
+        `;
+        ownedList.appendChild(el);
+      });
+    }
+  }
+
+  function renderHistory(){
+    const p = state.player;
+    $("histTag").textContent = `📚 ${state.history.length} temporadas`;
+
+    const line = $("currentStatsLine");
+    const list = $("historyList");
+    list.innerHTML = "";
+
+    if(!p){
+      line.innerHTML = `<span class="tag">Crie um jogador primeiro</span>`;
+      list.innerHTML = `<div class="hint">Sem histórico.</div>`;
+      return;
+    }
+
+    line.innerHTML = `
+      <span class="tag">Jogos: <b>${p.seasonStats.matches}</b></span>
+      <span class="tag">Gols: <b>${p.seasonStats.goals}</b></span>
+      <span class="tag">Assists: <b>${p.seasonStats.assists}</b></span>
+      <span class="tag">CS: <b>${p.seasonStats.cleanSheets}</b></span>
+      <span class="tag">Nota: <b>${p.seasonStats.avgRating.toFixed(2)}</b></span>
+    `;
+
+    if(state.history.length === 0){
+      list.innerHTML = `<div class="hint">Nenhuma temporada finalizada ainda.</div>`;
+      return;
+    }
+
+    state.history.forEach(h=>{
+      const el = document.createElement("div");
+      el.className = "box";
+      el.innerHTML = `
+        <div class="boxTitle">🏁 Temporada ${h.season} • ${h.club} (${h.league})</div>
+        <div class="boxSub">${h.position} • Idade ${h.age} • OVR ${h.overallStart}→${h.overallEnd} • REP ${h.repStart}→${h.repEnd}</div>
+        <div class="boxMid">
+          <span>Jogos <b>${h.stats.matches}</b></span>
+          <span>Gols <b>${h.stats.goals}</b></span>
+          <span>Assists <b>${h.stats.assists}</b></span>
+          <span>CS <b>${h.stats.cleanSheets}</b></span>
+          <span>Nota <b>${h.stats.avgRating.toFixed(2)}</b></span>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function render(){
+    renderPlayerPanel();
+    renderSeason();
+    renderOffers();
+    renderObjectives();
+    renderBank();
+    renderShop();
+    renderHistory();
+
+    // botões
+    const p = state.player;
+    const hasCareer = !!(p && p.club);
+    $("btnPlayWeek").disabled = !hasCareer;
+    $("btnTrain").disabled = !hasCareer;
+    $("btnRest").disabled = !hasCareer;
+    $("btnEndSeason").disabled = !hasCareer;
+    $("btnRenew").disabled = !hasCareer;
+  }
+
+  // =========================
+  // SAVE / LOAD
+  // =========================
+  function save(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      toast("Jogo salvo!");
+    }catch(e){
+      alert("Não consegui salvar (storage cheio ou bloqueado).");
+    }
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ toast("Não existe save ainda."); return; }
+      state = JSON.parse(raw);
+
+      // compat / defaults
+      state.newsMax ??= 8;
+      state.history ??= [];
+      state.objectives ??= [];
+      state.midWindowWeek ??= 19;
+
+      if(state.player){
+        state.player.bank ||= { name:"Santander", invested:0, totalInterest:0, lastInterest:0 };
+        state.player.owned ||= [];
+        state.player.attrs ||= genAttributes(state.player.type || "Base", state.player.age || 16);
+        state.player.overall ||= calcOverallFromAttrs(state.player.position || "ATA", state.player.attrs);
+        state.player.seasonStats ||= { matches:0, goals:0, assists:0, cleanSheets:0, avgRating:6.6 };
+        state.player.careerStats ||= { matches:0, goals:0, assists:0, cleanSheets:0 };
+        state.player.seasonStartOverall ??= state.player.overall;
+        state.player.seasonStartRep ??= state.player.reputation ?? 10;
+
+        // se não tiver objetivos, cria
+        if(!state.objectives || state.objectives.length === 0){
+          buildObjectives();
+        }
+      }
+
+      toast("Save carregado!");
+      if(state.player && state.player.club) showScreen("screenGame");
+      else if(state.player && !state.player.club) showScreen("screenClubPick");
+      else showScreen("screenStart");
+
+      render();
+    }catch(e){
+      alert("Erro ao carregar o save.");
+    }
+  }
+
+  function exitGame(){
+    showScreen("screenStart");
+    toast("Voltando para a tela inicial.");
+  }
+
+  // =========================
+  // EVENTS
+  // =========================
+  $("btnGenerate").addEventListener("click", generatePlayer);
+
+  $("btnStartCareer").addEventListener("click", ()=>{
+    if(!state.player){
+      generatePlayer();
+    }
+    // após gerar, vai para escolha de clube
+    showClubPick();
+  });
+
+  $("btnBackToStart").addEventListener("click", ()=>{
+    showScreen("screenStart");
+  });
+
+  $("btnConfirmPick").addEventListener("click", confirmClubPick);
+
+  $("btnPlayWeek").addEventListener("click", playWeek);
+  $("btnTrain").addEventListener("click", train);
+  $("btnRest").addEventListener("click", rest);
+  $("btnEndSeason").addEventListener("click", endSeason);
+
+  $("btnRenew").addEventListener("click", renewContract);
+
+  $("btnClearOffers").addEventListener("click", ()=>{
+    state.offers = [];
+    render();
+    toast("Propostas limpas.");
+  });
+
+  $("btnInvest").addEventListener("click", ()=>{
+    const v = Number($("inpInvest").value || 0);
+    invest(v);
+    $("inpInvest").value = "";
+  });
+
+  $("btnWithdraw").addEventListener("click", ()=>{
+    const v = Number($("inpWithdraw").value || 0);
+    withdraw(v);
+    $("inpWithdraw").value = "";
+  });
+
+  $("btnSellHint").addEventListener("click", ()=>{
+    toast("Venda ainda não existe. Se quiser, eu adiciono venda/depreciação/valorização.");
+  });
+
+  $("btnSave").addEventListener("click", save);
+  $("btnLoad").addEventListener("click", load);
+  $("btnExit").addEventListener("click", exitGame);
+
+  // Tabs
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      setActiveTab(t.getAttribute("data-tab"));
+    });
+  });
+
+  // Auto-save
+  setInterval(()=> { if(state.player) save(); }, 60_000);
+
+  // Render inicial
+  render();
+
+})();
+</script>
+</body>
+</html>
