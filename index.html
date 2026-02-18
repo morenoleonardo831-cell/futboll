@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Modo Carreira Jogador ⚽</title>
+  <title>Modo Carreira Jogador ⚽ (Loja + Impostos + Dívidas)</title>
 
   <style>
     :root{
@@ -37,8 +37,7 @@
 
     .brand{
       display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-bottom:12px;
-      flex-wrap:wrap;
+      gap:12px; margin-bottom:12px; flex-wrap:wrap;
     }
     .logo{ display:flex; align-items:center; gap:12px; }
     .ball{
@@ -48,8 +47,7 @@
       position:relative; overflow:hidden;
     }
     .ball:before{
-      content:"";
-      position:absolute; inset:-20%;
+      content:""; position:absolute; inset:-20%;
       background: conic-gradient(from 0deg,
         rgba(0,0,0,.15), rgba(0,0,0,0) 12%,
         rgba(0,0,0,.12) 24%, rgba(0,0,0,0) 36%,
@@ -86,7 +84,7 @@
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
-      transition:.15s transform, .15s background, .15s border, .15s opacity;
+      transition:.15s transform, .15s background, .15s opacity;
       font-weight:800; letter-spacing:.2px;
     }
     .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
@@ -188,15 +186,12 @@
       display:none; z-index:99;
       font-size:13px; color:var(--text);
       backdrop-filter: blur(10px);
-      max-width: min(620px, calc(100% - 24px));
+      max-width: min(900px, calc(100% - 24px));
       text-align:center;
     }
     .toast.show{ display:block; animation: fade .18s ease-out; }
 
-    .tabs{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-bottom:10px;
-    }
+    .tabs{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
     .tab{
       border:1px solid var(--line);
       background: rgba(0,0,0,.22);
@@ -222,9 +217,7 @@
       grid-template-columns: repeat(5, 1fr);
       gap:10px;
     }
-    @media (max-width: 700px){
-      .statGrid{ grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 700px){ .statGrid{ grid-template-columns: repeat(2, 1fr); } }
 
     .meter{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -241,11 +234,39 @@
       grid-template-columns: 1fr 1fr;
       gap:10px;
     }
-    @media (max-width: 780px){
-      .shopGrid{ grid-template-columns: 1fr; }
-    }
+    @media (max-width: 780px){ .shopGrid{ grid-template-columns: 1fr; } }
 
     .tiny{ font-size:11px; color:var(--muted); line-height:1.35; }
+
+    /* Modais */
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      display:none;
+      z-index:120;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .modalBack.show{ display:flex; }
+    .modal{
+      width:min(820px, 100%);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.25));
+    }
+    .modalHead{
+      padding:14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,93,93,.10), rgba(0,0,0,0));
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .modalHead .t{ font-weight:950; letter-spacing:.2px; }
+    .modalBody{ padding:14px; }
   </style>
 </head>
 
@@ -257,7 +278,7 @@
         <div class="ball" aria-hidden="true"></div>
         <div>
           <h1>Modo Carreira Jogador</h1>
-          <div class="sub">Atributos, objetivos, janela, histórico realista, banco e compras.</div>
+          <div class="sub">Loja (financiamento), IPTU, imposto por temporada, sonegação, dívidas com juros.</div>
         </div>
       </div>
 
@@ -268,12 +289,12 @@
       </div>
     </div>
 
-    <!-- TELA INICIAL -->
+    <!-- START -->
     <div class="screen active" id="screenStart">
       <div class="card">
         <div class="cardHeader">
           <h2>Iniciar</h2>
-          <span class="tag">⚽ <b>Carreira Realista</b> • Banco Santander • Loja</span>
+          <span class="tag">⚽ <b>Carreira</b> • 🛒 Loja • 🧾 Impostos</span>
         </div>
         <div class="cardBody">
           <div class="row">
@@ -290,10 +311,6 @@
                 <option value="Portugal">Portugal</option>
                 <option value="Espanha">Espanha</option>
                 <option value="França">França</option>
-                <option value="Alemanha">Alemanha</option>
-                <option value="Itália">Itália</option>
-                <option value="Uruguai">Uruguai</option>
-                <option value="Colômbia">Colômbia</option>
               </select>
             </div>
           </div>
@@ -303,14 +320,14 @@
               <label>Posição</label>
               <select id="selPos">
                 <option value="AUTO">Aleatória</option>
-                <option value="ATA">ATA (Centroavante)</option>
-                <option value="PE">PE (Ponta Esquerda)</option>
-                <option value="PD">PD (Ponta Direita)</option>
-                <option value="MEI">MEI (Armador)</option>
-                <option value="VOL">VOL (Volante)</option>
-                <option value="ZAG">ZAG (Zagueiro)</option>
-                <option value="LAT">LAT (Lateral)</option>
-                <option value="GOL">GOL (Goleiro)</option>
+                <option value="ATA">ATA</option>
+                <option value="PE">PE</option>
+                <option value="PD">PD</option>
+                <option value="MEI">MEI</option>
+                <option value="VOL">VOL</option>
+                <option value="ZAG">ZAG</option>
+                <option value="LAT">LAT</option>
+                <option value="GOL">GOL</option>
               </select>
             </div>
 
@@ -326,7 +343,7 @@
             <div class="col">
               <label>Liga inicial</label>
               <select id="selStartLeague">
-                <option value="AUTO" selected>Automático (pela nacionalidade)</option>
+                <option value="AUTO" selected>Automático</option>
                 <option value="BR">Brasil</option>
                 <option value="EN">Inglaterra</option>
                 <option value="AR">Argentina</option>
@@ -337,7 +354,7 @@
             <div class="col">
               <label>Começar onde?</label>
               <select id="selStartType">
-                <option value="AUTO" selected>Automático (pela idade)</option>
+                <option value="AUTO" selected>Automático</option>
                 <option value="Base">Base</option>
                 <option value="Profissional">Profissional</option>
               </select>
@@ -354,23 +371,21 @@
           <div class="divider"></div>
 
           <div class="hint">
-            Você vai <b>gerar o jogador</b> e depois escolher <b>entre 3 clubes iniciais</b>.
-            Atributos (PAC/SHO/PAS/DEF/PHY) definem o overall pela sua posição.
-            Banco Santander: investimento rende <b>1% por semana</b>.
-            <br><br>
-            ✅ Novo: a <b>Loja agora tem valorização/depreciação</b>, <b>custos de manutenção</b> e <b>venda de itens</b>.
-            Também existe <b>imposto no salário</b> e <b>renda passiva</b> de negócios.
+            • <b>Imposto por temporada</b>: você escolhe pagar ou sonegar.<br>
+            • Se sonegar e cair: <b>multa 150%</b> do total e vira dívida.<br>
+            • <b>Dívida acumula juros toda semana</b>.<br>
+            • Loja tem <b>financiamento</b>, <b>manutenção semanal</b>, e <b>IPTU por temporada</b> em imóveis.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ESCOLHER CLUBE INICIAL -->
+    <!-- PICK CLUB -->
     <div class="screen" id="screenClubPick">
       <div class="card">
         <div class="cardHeader">
           <h2>Escolha seu clube inicial</h2>
-          <span class="tag">🎯 3 opções • influenciam salário e reputação</span>
+          <span class="tag">🏟️ 3 opções</span>
         </div>
         <div class="cardBody">
           <div class="hint" id="pickHint" style="margin-bottom:10px"></div>
@@ -384,31 +399,28 @@
       </div>
     </div>
 
-    <!-- JOGO -->
+    <!-- GAME -->
     <div class="screen" id="screenGame">
       <div class="grid">
 
-        <!-- PAINEL JOGADOR -->
         <div class="card">
           <div class="cardHeader">
             <h2>Seu Jogador</h2>
-            <span class="tag">🏅 Reputação • 🧾 Contrato • 💳 Santander</span>
+            <span class="tag">💰 Carteira • 📌 Dívidas • 😄 Felicidade</span>
           </div>
           <div class="cardBody" id="playerPanel"></div>
         </div>
 
-        <!-- TABS -->
         <div class="card">
           <div class="cardHeader">
             <h2>Central</h2>
-            <span class="tag" id="midTag">🪟 Janela: semana 19</span>
+            <span class="tag" id="midTag">🪟 Janela</span>
           </div>
           <div class="cardBody">
             <div class="tabs">
               <button class="tab active" data-tab="tabTemporada">Temporada</button>
-              <button class="tab" data-tab="tabObjetivos">Objetivos</button>
               <button class="tab" data-tab="tabPropostas">Propostas</button>
-              <button class="tab" data-tab="tabBanco">Banco</button>
+              <button class="tab" data-tab="tabFinancas">Finanças</button>
               <button class="tab" data-tab="tabLoja">Loja</button>
               <button class="tab" data-tab="tabHistorico">Histórico</button>
             </div>
@@ -434,28 +446,25 @@
 
               <div class="pill">
                 <div>
-                  <div class="title">Notificações (limpam sozinhas)</div>
-                  <div class="desc">Mostra só as últimas para não lotar a tela</div>
+                  <div class="title">Impostos & Dívidas</div>
+                  <div class="desc" id="taxLine">No fim da temporada você decide pagar ou sonegar.</div>
+                </div>
+                <span class="tag" id="taxTag">🧾 OK</span>
+              </div>
+
+              <div class="box" id="taxBox"></div>
+
+              <div class="divider"></div>
+
+              <div class="pill">
+                <div>
+                  <div class="title">Notificações</div>
+                  <div class="desc">As antigas somem pra não lotar</div>
                 </div>
                 <span class="tag" id="newsTag">📰 0</span>
               </div>
 
               <div class="list" id="newsList"></div>
-              <div class="tiny">Dica: as mensagens antigas somem automaticamente.</div>
-            </div>
-
-            <!-- OBJETIVOS -->
-            <div class="panel" id="tabObjetivos">
-              <div class="pill">
-                <div>
-                  <div class="title">Objetivos do Técnico</div>
-                  <div class="desc">Cumpra para ganhar bônus e reputação</div>
-                </div>
-                <span class="tag" id="objTag">🎯 0/0</span>
-              </div>
-              <div class="list" id="objList"></div>
-              <div class="divider"></div>
-              <div class="hint">No fim da temporada o jogo avalia e paga a recompensa automaticamente.</div>
             </div>
 
             <!-- PROPOSTAS -->
@@ -470,26 +479,23 @@
                   <button class="btn btnSmall" id="btnClearOffers">Limpar</button>
                 </div>
               </div>
-
               <div class="list" id="offersList"></div>
-              <div class="hint" style="margin-top:10px">
-                A reputação influencia o nível das propostas e as luvas.
-              </div>
             </div>
 
-            <!-- BANCO -->
-            <div class="panel" id="tabBanco">
+            <!-- FINANÇAS -->
+            <div class="panel" id="tabFinancas">
               <div class="pill">
                 <div>
-                  <div class="title">Santander</div>
-                  <div class="desc">Investimento rende 1% por semana (juros compostos)</div>
+                  <div class="title">Banco + Dívidas</div>
+                  <div class="desc">Banco rende 1%/sem • Dívida (imposto+geral) rende 1,5%/sem</div>
                 </div>
-                <span class="tag">📈 <b>+1%/sem</b></span>
+                <span class="tag">💳 <b>Santander</b></span>
               </div>
 
               <div class="statGrid" id="bankMeters"></div>
 
               <div class="divider"></div>
+
               <div class="row">
                 <div class="col">
                   <label>Valor para investir</label>
@@ -507,22 +513,38 @@
               </div>
 
               <div class="divider"></div>
-              <div class="hint">O rendimento acontece automaticamente ao jogar a semana.</div>
+
+              <div class="row">
+                <div class="col">
+                  <label>Pagar dívida (qualquer valor)</label>
+                  <input id="inpPayDebt" type="number" min="0" step="1000" placeholder="Ex: 10000" />
+                </div>
+                <button class="btn" id="btnPayDebt">Pagar Dívida</button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="pill">
+                <div>
+                  <div class="title">Financiamentos ativos</div>
+                  <div class="desc">Parcelas são cobradas automaticamente ao jogar semana</div>
+                </div>
+                <span class="tag" id="loanTag">📄 0</span>
+              </div>
+
+              <div class="list" id="loanList"></div>
+              <div class="tiny">Se faltar dinheiro na parcela/manutenção, vira dívida e sua reputação pode cair.</div>
             </div>
 
             <!-- LOJA -->
             <div class="panel" id="tabLoja">
               <div class="pill">
                 <div>
-                  <div class="title">Compras, Patrimônio & Vendas</div>
-                  <div class="desc">Itens valorizam/depreciam + manutenção + renda passiva (negócios)</div>
+                  <div class="title">Loja & Patrimônio</div>
+                  <div class="desc">Comprar, financiar, vender • Itens valorizam/desvalorizam • IPTU em imóveis</div>
                 </div>
                 <span class="tag" id="netWorthTag">🏠 Patrimônio: <b>R$ 0</b></span>
               </div>
-
-              <div class="statGrid" id="shopMeters"></div>
-
-              <div class="divider"></div>
 
               <div class="shopGrid" id="shopList"></div>
 
@@ -530,36 +552,25 @@
 
               <div class="pill">
                 <div>
-                  <div class="title">Seus itens (com valor atual)</div>
-                  <div class="desc">Agora dá pra vender e realizar lucro/prejuízo</div>
+                  <div class="title">Seus itens</div>
+                  <div class="desc">Valor atual + manutenção + venda</div>
                 </div>
-                <button class="btn btnSmall" id="btnSellHint">ℹ️</button>
+                <span class="tag" id="ownedTag">📦 0</span>
               </div>
+
               <div class="list" id="ownedList"></div>
-              <div class="tiny">
-                Regras rápidas: <b>carro</b> cai de preço, <b>casa</b> sobe, <b>terreno/fazenda</b> sobe, <b>luxo</b> cai um pouco,
-                <b>negócio</b> gera renda semanal.
-              </div>
+              <div class="tiny">Venda tem taxa de 5% (corretagem). Imóveis pagam IPTU no fim da temporada.</div>
             </div>
 
             <!-- HISTÓRICO -->
             <div class="panel" id="tabHistorico">
               <div class="pill">
                 <div>
-                  <div class="title">Histórico de Temporadas</div>
-                  <div class="desc">A “temporada atual” zera quando começa a próxima</div>
+                  <div class="title">Histórico</div>
+                  <div class="desc">Últimas 20 temporadas</div>
                 </div>
                 <span class="tag" id="histTag">📚 0 temporadas</span>
               </div>
-
-              <div class="box">
-                <div class="boxTitle">Temporada atual (estatísticas)</div>
-                <div class="boxSub">Isso zera quando a temporada fecha</div>
-                <div class="boxMid" id="currentStatsLine"></div>
-              </div>
-
-              <div class="divider"></div>
-
               <div class="list" id="historyList"></div>
             </div>
 
@@ -569,6 +580,28 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- MODAL IMPOSTO (TOTAL: renda + IPTU) -->
+  <div class="modalBack" id="taxModalBack">
+    <div class="modal">
+      <div class="modalHead">
+        <div class="t">🧾 Impostos da Temporada</div>
+        <span class="tag" id="taxModalRisk">👀 Risco: 0%</span>
+      </div>
+      <div class="modalBody" id="taxModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL FINANCIAMENTO -->
+  <div class="modalBack" id="finModalBack">
+    <div class="modal">
+      <div class="modalHead">
+        <div class="t">📄 Financiamento</div>
+        <span class="tag" id="finModalTag">💰</span>
+      </div>
+      <div class="modalBody" id="finModalBody"></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -582,19 +615,16 @@
     "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
     "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
   ];
-
   const PREMIER = [
     "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
     "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
   ];
-
   const ARGENTINA = [
     "Boca Juniors","River Plate","Racing Club","Independiente","San Lorenzo",
     "Estudiantes","Vélez Sarsfield","Lanús","Rosario Central","Newell's Old Boys",
     "Defensa y Justicia","Talleres","Huracán","Argentinos Juniors","Godoy Cruz",
     "Banfield","Belgrano","Unión","Platense","Sarmiento"
   ];
-
   const LALIGA = [
     "Real Madrid","Barcelona","Atlético de Madrid","Sevilla","Valencia",
     "Villarreal","Real Sociedad","Athletic Bilbao","Real Betis","Celta de Vigo",
@@ -627,42 +657,32 @@
   };
 
   // =========================
-  // IMPOSTOS (simples e divertido)
+  // LOJA (itens realistas)
   // =========================
-  const TAX_BY_LEAGUE = {
-    BR: 0.15,
-    AR: 0.16,
-    ES: 0.22,
-    EN: 0.25
-  };
-
-  // =========================
-  // LOJA (agora tem NEGÓCIOS + regras)
-  // =========================
+  // appreciationSeason: +0.05 = valoriza 5% por temporada
+  // depreciationSeason: -0.12 = desvaloriza 12% por temporada
+  // maintenanceWeekly: custo semanal
+  // iptuRateSeason: imposto por temporada sobre valor atual (imóvel/terreno)
+  // moodGain / repGain: impacto ao comprar (e ao vender perde parte)
   const SHOP_ITEMS = [
-    // Carros (depreciam)
-    { id:"car_popular", type:"Carro", name:"Corola", price: 130000, meta:{ depPerWeek: 0.004, upkeepPerWeek: 120 } },
-    { id:"car_esportivo", type:"Carro", name:"BMW", price: 350000, meta:{ depPerWeek: 0.006, upkeepPerWeek: 260 } },
-    { id:"suv_luxo", type:"Carro", name:"Bentley", price: 1780000, meta:{ depPerWeek: 0.008, upkeepPerWeek: 1400 } },
+    // Carros
+    { id:"car_pop", type:"Carro", name:"Corolla", price: 130000,  depreciationSeason:-0.10, maintenanceWeekly: 350,  iptuRateSeason:0,   moodGain:3, repGain:0 },
+    { id:"car_sport", type:"Carro", name:"BMW M", price: 350000,    depreciationSeason:-0.14, maintenanceWeekly: 800,  iptuRateSeason:0,   moodGain:6, repGain:1 },
+    { id:"car_lux", type:"Carro", name:"Bentley", price: 1780000,   depreciationSeason:-0.16, maintenanceWeekly: 2200, iptuRateSeason:0,   moodGain:10, repGain:3 },
 
-    // Casas (valorizam) + custo (condomínio/imposto/manutenção)
-    { id:"ap_pequeno", type:"Casa", name:"Apartamento Pequeno em São Paulo", price: 1220000, meta:{ appPerWeek: 0.0016, upkeepPerWeek: 900 } },
-    { id:"casa_media", type:"Casa", name:"Casa Média em Manchister", price: 3650000, meta:{ appPerWeek: 0.0012, upkeepPerWeek: 1900 } },
-    { id:"mansao", type:"Casa", name:"Mansão em Ibiza", price: 16500000, meta:{ appPerWeek: 0.0010, upkeepPerWeek: 7200 } },
+    // Casas/Imóveis
+    { id:"ap_sp", type:"Imóvel", name:"Apartamento (São Paulo)", price: 1220000, appreciationSeason:0.05, maintenanceWeekly: 600, iptuRateSeason:0.012, moodGain:7, repGain:1 },
+    { id:"casa_en", type:"Imóvel", name:"Casa Média (Manchester)", price: 3650000, appreciationSeason:0.04, maintenanceWeekly: 1100, iptuRateSeason:0.010, moodGain:9, repGain:2 },
+    { id:"mansao", type:"Imóvel", name:"Mansão (Ibiza)", price: 16500000, appreciationSeason:0.06, maintenanceWeekly: 4500, iptuRateSeason:0.014, moodGain:14, repGain:4 },
 
-    // Terrenos (valorizam)
-    { id:"terreno", type:"Terreno", name:"Terreno (1 lote)", price: 120000, meta:{ appPerWeek: 0.0022, upkeepPerWeek: 50 } },
-    { id:"fazenda", type:"Terreno", name:"Fazenda", price: 50000000, meta:{ appPerWeek: 0.0028, upkeepPerWeek: 9000 } },
+    // Terrenos
+    { id:"lote", type:"Terreno", name:"Terreno (1 lote)", price: 120000, appreciationSeason:0.03, maintenanceWeekly: 50, iptuRateSeason:0.006, moodGain:1, repGain:0 },
+    { id:"fazenda", type:"Terreno", name:"Fazenda", price: 50000000, appreciationSeason:0.07, maintenanceWeekly: 8000, iptuRateSeason:0.008, moodGain:10, repGain:3 },
 
-    // Luxo (deprecia leve)
-    { id:"iate", type:"Luxo", name:"Iate", price: 12000000, meta:{ depPerWeek: 0.0032, upkeepPerWeek: 6500 } },
-    { id:"jato", type:"Luxo", name:"Jato Particular", price: 75000000, meta:{ depPerWeek: 0.0038, upkeepPerWeek: 28000 } },
-    { id:"helicoptero", type:"Luxo", name:"Helicóptero", price: 28000000, meta:{ depPerWeek: 0.0035, upkeepPerWeek: 12000 } },
-
-    // Negócios (valorizam um pouco + renda semanal)
-    { id:"neg_academia", type:"Negócio", name:"Academia (renda passiva)", price: 850000, meta:{ appPerWeek: 0.0010, incomePerWeek: 14000, upkeepPerWeek: 1800 } },
-    { id:"neg_loja", type:"Negócio", name:"Loja de Roupas (renda passiva)", price: 1250000, meta:{ appPerWeek: 0.0011, incomePerWeek: 19000, upkeepPerWeek: 2600 } },
-    { id:"neg_rest", type:"Negócio", name:"Restaurante (renda passiva)", price: 2200000, meta:{ appPerWeek: 0.0012, incomePerWeek: 32000, upkeepPerWeek: 4800 } }
+    // Luxo
+    { id:"iate", type:"Luxo", name:"Iate", price: 12000000, depreciationSeason:-0.10, maintenanceWeekly: 9000, iptuRateSeason:0, moodGain:12, repGain:4 },
+    { id:"jato", type:"Luxo", name:"Jato Particular", price: 75000000, depreciationSeason:-0.12, maintenanceWeekly: 22000, iptuRateSeason:0, moodGain:16, repGain:6 },
+    { id:"heli", type:"Luxo", name:"Helicóptero", price: 28000000, depreciationSeason:-0.11, maintenanceWeekly: 12000, iptuRateSeason:0, moodGain:14, repGain:5 }
   ];
 
   // =========================
@@ -679,48 +699,78 @@
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(window.__toastT);
-    window.__toastT = setTimeout(()=> t.classList.remove("show"), 1800);
+    window.__toastT = setTimeout(()=> t.classList.remove("show"), 1900);
   }
 
   function leagueInfo(id){ return LEAGUES.find(l => l.id === id) || LEAGUES[0]; }
   function posInfo(id){ return POSITIONS.find(p => p.id === id) || POSITIONS[0]; }
 
-  // semana global (pra atualização de ativos)
-  function globalWeekNumber(){
-    // T1W1 -> 1
-    // T2W1 -> 39 (38 + 1)
-    return ((state.season - 1) * state.weeksPerSeason) + state.week;
-  }
-
   // =========================
-  // ESTADO
+  // STATE
   // =========================
-  const STORAGE_KEY = "mcj_save_v4_loja_valores";
+  const STORAGE_KEY = "mcj_save_loja_impostos_v6";
 
   let state = {
-    createdAt: Date.now(),
     season: 1,
     week: 1,
     weeksPerSeason: 38,
     midWindowWeek: 19,
-
     news: [],
     newsMax: 8,
-
     offers: [],
-    objectives: [],
-
     history: [],
+    player: null,
 
-    player: null
+    // imposto pendente (total = renda + iptu)
+    tax: {
+      pending: false,
+      seasonRef: 0,
+      dueIncome: 0,
+      dueIPTU: 0,
+      dueTotal: 0,
+      attempts: 0
+    },
+
+    // modal financiamento
+    fin: { open:false, itemId:null }
   };
 
-  // =========================
-  // NOTÍCIAS (limpa)
-  // =========================
   function addNews(text){
     state.news.unshift({ t: Date.now(), text });
     state.news = state.news.slice(0, state.newsMax);
+  }
+
+  // =========================
+  // PLAYER / FINANCE DEFAULTS
+  // =========================
+  function ensurePlayer(p){
+    p.bank ||= { name:"Santander", invested:0, totalInterest:0, lastInterest:0 };
+
+    p.finance ||= {
+      seasonSalaryEarned: 0,
+      seasonBonusesEarned: 0,
+
+      // dívidas (separado, mas soma)
+      taxDebt: 0,
+      generalDebt: 0,
+
+      // histórico fiscal
+      lastTaxDueTotal: 0,
+      totalFines: 0,
+      lastDebtInterest: 0,
+
+      // financiamentos
+      loans: [] // {id, itemName, principal, rateWeekly, weeksLeft, weeksTotal, weeklyPayment, missed, createdAt}
+    };
+
+    p.owned ||= []; // {id,name,type,boughtAt, basePrice, currentValue, maintenanceWeekly, iptuRateSeason, moodGain, repGain, appreciationSeason, depreciationSeason}
+
+    p.happiness ??= randInt(55, 80); // 😄
+  }
+
+  function totalDebt(p){
+    ensurePlayer(p);
+    return (p.finance.taxDebt||0) + (p.finance.generalDebt||0);
   }
 
   // =========================
@@ -736,7 +786,6 @@
     const PAS = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
     const DEF = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
     const PHY = clamp(randInt(baseMin, baseMax) + randInt(0, ageBoost), 35, 95);
-
     return { PAC, SHO, PAS, DEF, PHY };
   }
 
@@ -746,398 +795,635 @@
     return clamp(Math.round(o), 35, 99);
   }
 
-  function genPotential(ovr){
-    return clamp(ovr + randInt(6, 18), 60, 95);
-  }
-
-  // =========================
-  // REGRAS INICIAIS
-  // =========================
+  function genPotential(ovr){ return clamp(ovr + randInt(6, 18), 60, 95); }
   function decideStartTypeByAge(age){
     const baseChance = age === 15 ? 0.85 : age === 16 ? 0.70 : age === 17 ? 0.45 : 0.25;
     return (Math.random() < baseChance) ? "Base" : "Profissional";
   }
-  function decideStartLeagueByNat(nationality){
-    if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
-    if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
-    if(nationality === "Argentina") return (Math.random() < 0.85) ? "AR" : "ES";
-    if(nationality === "Espanha") return (Math.random() < 0.85) ? "ES" : "EN";
+  function decideStartLeagueByNat(nat){
+    if(nat === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
+    if(nat === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
+    if(nat === "Argentina") return (Math.random() < 0.85) ? "AR" : "ES";
+    if(nat === "Espanha") return (Math.random() < 0.85) ? "ES" : "EN";
     return (Math.random() < 0.50) ? "EN" : "BR";
   }
-
-  function genSalary(startType){
-    if(startType === "Base") return randInt(5000, 15000);
-    return randInt(40000, 120000);
-  }
-  function genContractWeeks(startType){
-    return (startType === "Base") ? randInt(26, 104) : randInt(52, 156);
-  }
+  function genPosition(sel){ return (sel && sel !== "AUTO") ? sel : choice(POSITIONS).id; }
+  function genSalary(startType){ return (startType === "Base") ? randInt(5000, 15000) : randInt(40000, 120000); }
+  function genContractWeeks(startType){ return (startType === "Base") ? randInt(26, 104) : randInt(52, 156); }
   function calcReleaseClause(weeklySalary, startType){
     const factor = startType === "Base" ? randInt(60, 120) : randInt(80, 180);
     return clamp(Math.round((weeklySalary * factor)/1000)*1000, 200000, 50000000);
-  }
-  function calcSigningBonus(weeklySalary, rep){
-    const w = randInt(2, 10);
-    const mult = 1 + (rep/250);
-    return clamp(Math.round((weeklySalary * w * mult)/1000)*1000, 10000, 8000000);
   }
   function baseReputation(startType, leagueId){
     const base = startType === "Base" ? randInt(8, 22) : randInt(18, 40);
     const l = leagueInfo(leagueId);
     return clamp(Math.round(base * l.repWeight), 1, 100);
   }
-  function genPosition(sel){
-    if(sel && sel !== "AUTO") return sel;
-    return choice(POSITIONS).id;
+  function calcSigningBonus(weeklySalary, rep){
+    const w = randInt(2, 10);
+    const mult = 1 + (rep/250);
+    return clamp(Math.round((weeklySalary * w * mult)/1000)*1000, 10000, 8000000);
   }
 
   // =========================
-  // OBJETIVOS DO TÉCNICO
+  // IMPOSTOS (renda + IPTU)
   // =========================
-  function buildObjectives(){
-    const p = state.player;
-    if(!p) return;
-
-    const level = clamp(Math.round((p.overall + p.reputation)/2), 35, 95);
-
-    const gTarget = p.position === "GOL" ? 0 : clamp(Math.round(6 + (level-50)/8), 3, 18);
-    const aTarget = ["MEI","PE","PD","LAT"].includes(p.position) ? clamp(Math.round(4 + (level-50)/10), 2, 14) : clamp(Math.round(2 + (level-50)/14), 1, 10);
-    const ratingTarget = clamp(6.9 + (level-50)/120, 6.8, 7.8);
-
-    const csTarget = p.position === "GOL" ? clamp(Math.round(8 + (level-50)/8), 6, 18) : null;
-    const matchesTarget = clamp(Math.round(18 + (level-45)/3), 16, 30);
-
-    const rewardBase = clamp(25000 + level*2500, 50000, 350000);
-    const repReward = clamp(Math.round(2 + (level-50)/18), 2, 8);
-
-    const list = [];
-
-    list.push({
-      id:"obj_matches",
-      title:`Jogar ${matchesTarget} partidas`,
-      kind:"matches",
-      target: matchesTarget,
-      rewardMoney: Math.round(rewardBase*0.7),
-      rewardRep: Math.max(1, Math.round(repReward*0.6)),
-      done:false
-    });
-
-    if(p.position === "GOL"){
-      list.push({
-        id:"obj_cs",
-        title:`Fazer ${csTarget} clean sheets`,
-        kind:"cleanSheets",
-        target: csTarget,
-        rewardMoney: Math.round(rewardBase*0.95),
-        rewardRep: repReward,
-        done:false
-      });
-    } else {
-      list.push({
-        id:"obj_goals",
-        title:`Marcar ${gTarget} gols`,
-        kind:"goals",
-        target: gTarget,
-        rewardMoney: Math.round(rewardBase*0.95),
-        rewardRep: repReward,
-        done:false
-      });
-      list.push({
-        id:"obj_assists",
-        title:`Dar ${aTarget} assistências`,
-        kind:"assists",
-        target: aTarget,
-        rewardMoney: Math.round(rewardBase*0.75),
-        rewardRep: Math.max(1, Math.round(repReward*0.7)),
-        done:false
-      });
-    }
-
-    list.push({
-      id:"obj_rating",
-      title:`Terminar com nota média ≥ ${ratingTarget.toFixed(2)}`,
-      kind:"avgRating",
-      target: Number(ratingTarget.toFixed(2)),
-      rewardMoney: Math.round(rewardBase*0.85),
-      rewardRep: Math.max(2, repReward),
-      done:false
-    });
-
-    state.objectives = list;
+  function calcIncomeTax(income){
+    const x = Math.max(0, income);
+    let rate = 0.08;
+    if(x > 500_000) rate = 0.12;
+    if(x > 2_000_000) rate = 0.16;
+    return Math.round((x * rate) / 100) * 100;
   }
 
-  function evalObjectivesEndSeason(){
-    const p = state.player;
-    if(!p) return;
-
-    let gainedMoney = 0;
-    let gainedRep = 0;
-
-    for(const o of state.objectives){
-      let ok = false;
-      if(o.kind === "matches") ok = p.seasonStats.matches >= o.target;
-      if(o.kind === "goals") ok = p.seasonStats.goals >= o.target;
-      if(o.kind === "assists") ok = p.seasonStats.assists >= o.target;
-      if(o.kind === "cleanSheets") ok = p.seasonStats.cleanSheets >= o.target;
-      if(o.kind === "avgRating") ok = p.seasonStats.avgRating >= o.target;
-
-      o.done = ok;
-
-      if(ok){
-        gainedMoney += o.rewardMoney;
-        gainedRep += o.rewardRep;
+  function calcIPTUFromAssets(p){
+    ensurePlayer(p);
+    let iptu = 0;
+    for(const a of p.owned){
+      if(a.iptuRateSeason && a.iptuRateSeason > 0){
+        iptu += (a.currentValue * a.iptuRateSeason);
       }
     }
+    return Math.round(iptu / 100) * 100;
+  }
 
-    if(gainedMoney > 0){
-      p.wallet += gainedMoney;
-      addNews(`🎯 Objetivos cumpridos! Bônus: ${formatBRL(gainedMoney)} + Reputação +${gainedRep}.`);
-      toast("Objetivos pagos!");
+  function taxCaughtChance(){
+    const p = state.player;
+    if(!p) return 0.25;
+    ensurePlayer(p);
+
+    const income = (p.finance.seasonSalaryEarned||0) + (p.finance.seasonBonusesEarned||0);
+    const due = (state.tax.dueTotal||0);
+
+    let chance = 0.18;
+    chance += clamp(income / 4_000_000, 0, 0.35);     // renda alta
+    chance += clamp(due / 6_000_000, 0, 0.25);        // imposto alto
+    chance += clamp((p.reputation||0) / 200, 0, 0.30);// “visibilidade”
+    chance += clamp((state.tax.attempts || 0) * 0.10, 0, 0.35);
+
+    return clamp(chance, 0.12, 0.88);
+  }
+
+  function openTaxDecisionModal(){
+    const p = state.player;
+    ensurePlayer(p);
+
+    const dueIncome = Math.max(0, Math.floor(state.tax.dueIncome || 0));
+    const dueIPTU = Math.max(0, Math.floor(state.tax.dueIPTU || 0));
+    const due = Math.max(0, Math.floor(state.tax.dueTotal || 0));
+
+    const risk = Math.round(taxCaughtChance()*100);
+    $("taxModalRisk").textContent = `👀 Risco: ${risk}%`;
+
+    $("taxModalBody").innerHTML = `
+      <div class="box">
+        <div class="boxTitle">Temporada ${state.tax.seasonRef} • Impostos totais: ${formatBRL(due)}</div>
+        <div class="boxSub">Inclui imposto de renda + IPTU. Para seguir, você precisa decidir.</div>
+        <div class="boxMid">
+          <span>💼 Renda (salário): <b>${formatBRL(p.finance.seasonSalaryEarned||0)}</b></span>
+          <span>🎁 Bônus/Luvas: <b>${formatBRL(p.finance.seasonBonusesEarned||0)}</b></span>
+          <span>🏠 Patrimônio: <b>${formatBRL(netWorth(p))}</b></span>
+        </div>
+        <div class="boxMid">
+          <span>🧾 Imposto renda: <b>${formatBRL(dueIncome)}</b></span>
+          <span>🏛️ IPTU: <b>${formatBRL(dueIPTU)}</b></span>
+          <span>📌 Dívida atual: <b>${formatBRL(totalDebt(p))}</b></span>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <div class="boxTitle">Opções</div>
+        <div class="boxSub">
+          • <b>Pagar</b>: se não tiver dinheiro, o restante vira dívida.<br>
+          • <b>Sonegar</b>: se der errado, multa de <b>150%</b> do total (vira dívida e acumula).
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn btnPrimary" id="btnTaxPay">Pagar impostos</button>
+          <button class="btn btnDanger" id="btnTaxEvade">Tentar sonegar</button>
+        </div>
+      </div>
+    `;
+
+    $("taxModalBack").classList.add("show");
+    $("btnTaxPay").onclick = payTaxes;
+    $("btnTaxEvade").onclick = evadeTaxes;
+  }
+
+  function closeTaxDecisionModal(){
+    $("taxModalBack").classList.remove("show");
+  }
+
+  function createSeasonTaxes(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+
+    const income = (p.finance.seasonSalaryEarned||0) + (p.finance.seasonBonusesEarned||0);
+    const dueIncome = calcIncomeTax(income);
+    const dueIPTU = calcIPTUFromAssets(p);
+    const dueTotal = dueIncome + dueIPTU;
+
+    state.tax = {
+      pending: dueTotal > 0,
+      seasonRef: state.season,
+      dueIncome,
+      dueIPTU,
+      dueTotal,
+      attempts: 0
+    };
+
+    p.finance.lastTaxDueTotal = dueTotal;
+
+    if(dueTotal > 0){
+      addNews(`🧾 Impostos da Temporada ${state.season}: ${formatBRL(dueTotal)} (renda + IPTU). Decida: pagar ou sonegar.`);
+      toast("Impostos gerados!");
+      openTaxDecisionModal();
     } else {
-      addNews("🎯 Objetivos não foram cumpridos nesta temporada.");
+      state.tax.pending = false;
+    }
+  }
+
+  function payTaxes(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+    if(!state.tax.pending) return;
+
+    const due = Math.max(0, Math.floor(state.tax.dueTotal || 0));
+    const pay = Math.min(p.wallet, due);
+    p.wallet -= pay;
+
+    const remaining = due - pay;
+    if(remaining > 0){
+      p.finance.taxDebt += remaining;
+      addNews(`🧾 Pagou ${formatBRL(pay)}. Faltou ${formatBRL(remaining)} → virou dívida de impostos.`);
+      p.happiness = clamp(p.happiness - 2, 0, 100);
+      toast("Restante virou dívida!");
+    } else {
+      addNews(`🧾 Impostos pagos: ${formatBRL(due)}.`);
+      p.happiness = clamp(p.happiness + 1, 0, 100);
+      toast("Impostos pagos!");
     }
 
-    p.reputation = clamp(p.reputation + gainedRep, 1, 100);
+    state.tax.pending = false;
+    state.tax.dueIncome = state.tax.dueIPTU = state.tax.dueTotal = 0;
+    closeTaxDecisionModal();
+    startNextSeason();
+  }
+
+  function evadeTaxes(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+    if(!state.tax.pending) return;
+
+    const due = Math.max(0, Math.floor(state.tax.dueTotal || 0));
+    state.tax.attempts = (state.tax.attempts || 0) + 1;
+
+    const caught = Math.random() < taxCaughtChance();
+
+    if(caught){
+      const fine = Math.round((due * 1.5) / 100) * 100; // 150%
+      const totalOwed = due + fine; // 250% total
+      p.finance.taxDebt += totalOwed;
+      p.finance.totalFines += fine;
+
+      p.reputation = clamp(p.reputation - randInt(2,5), 1, 100);
+      p.happiness = clamp(p.happiness - randInt(3,7), 0, 100);
+
+      addNews(`🚨 Caiu na sonegação! Impostos ${formatBRL(due)} + multa (150%) ${formatBRL(fine)} = dívida ${formatBRL(totalOwed)}.`);
+      toast("Multa aplicada!");
+    } else {
+      // dá certo (por enquanto)
+      p.happiness = clamp(p.happiness + 2, 0, 100);
+      addNews(`😶‍🌫️ Sonegação deu certo (por enquanto). Você evitou ${formatBRL(due)} nesta temporada.`);
+      toast("Sonegação deu certo!");
+    }
+
+    state.tax.pending = false;
+    state.tax.dueIncome = state.tax.dueIPTU = state.tax.dueTotal = 0;
+    closeTaxDecisionModal();
+    startNextSeason();
+  }
+
+  // Dívidas com juros semanal
+  function debtTickWeekly(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+
+    const rate = 0.015; // 1,5%/sem
+    const total = totalDebt(p);
+
+    if(total > 0){
+      // aplica juros proporcionalmente nas duas dívidas
+      const interest = total * rate;
+      const add = Math.round(interest / 100) * 100;
+
+      // reparte: 60% vai para taxDebt primeiro (só pra dar “cara”)
+      const toTax = Math.min(add, Math.round(add*0.60/100)*100);
+      const toGen = add - toTax;
+
+      p.finance.taxDebt += toTax;
+      p.finance.generalDebt += toGen;
+
+      p.finance.lastDebtInterest = add;
+
+      // dívida derruba humor um pouco
+      if(Math.random() < 0.45){
+        p.happiness = clamp(p.happiness - 1, 0, 100);
+      }
+
+      // notificação leve
+      if(add > 0 && Math.random() < 0.55){
+        addNews(`📌 Dívidas: juros +${formatBRL(add)} nesta semana.`);
+      }
+    } else {
+      p.finance.lastDebtInterest = 0;
+    }
+  }
+
+  function payDebt(amount){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+
+    amount = Math.max(0, Math.floor(amount));
+    if(amount <= 0) return toast("Digite um valor válido.");
+    if(totalDebt(p) <= 0) return toast("Você não tem dívidas.");
+    if(amount > p.wallet) return toast("Sem dinheiro suficiente.");
+
+    // paga primeiro a dívida de impostos
+    let pay = amount;
+    const payTax = Math.min(pay, p.finance.taxDebt);
+    p.finance.taxDebt -= payTax;
+    pay -= payTax;
+
+    const payGen = Math.min(pay, p.finance.generalDebt);
+    p.finance.generalDebt -= payGen;
+
+    const paidTotal = payTax + payGen;
+    p.wallet -= paidTotal;
+
+    p.happiness = clamp(p.happiness + 1, 0, 100);
+    addNews(`✅ Pagou ${formatBRL(paidTotal)} em dívidas. Restante: ${formatBRL(totalDebt(p))}.`);
+    toast("Dívida paga!");
+    render();
   }
 
   // =========================
-  // BANCO (Santander)
+  // BANCO
   // =========================
   function bankTickWeekly(){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
 
     if(p.bank.invested > 0){
       const interest = p.bank.invested * 0.01;
       p.bank.invested += interest;
       p.bank.totalInterest += interest;
       p.bank.lastInterest = interest;
+      if(Math.random() < 0.45) addNews(`🏦 Santander: rendimento +${formatBRL(interest)} (1%).`);
     } else {
       p.bank.lastInterest = 0;
     }
   }
-
   function invest(amount){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
     amount = Math.max(0, Math.floor(amount));
     if(amount <= 0) return toast("Digite um valor válido.");
     if(amount > p.wallet) return toast("Você não tem esse dinheiro.");
-
     p.wallet -= amount;
     p.bank.invested += amount;
-    addNews(`🏦 Santander: você investiu ${formatBRL(amount)}.`);
+    addNews(`🏦 Investiu ${formatBRL(amount)} no Santander.`);
     toast("Investido!");
     render();
   }
-
   function withdraw(amount){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
     amount = Math.max(0, Math.floor(amount));
     if(amount <= 0) return toast("Digite um valor válido.");
     if(amount > p.bank.invested) return toast("Você não tem esse valor investido.");
-
     p.bank.invested -= amount;
     p.wallet += amount;
-    addNews(`🏦 Santander: você resgatou ${formatBRL(amount)}.`);
+    addNews(`🏦 Resgatou ${formatBRL(amount)} do Santander.`);
     toast("Resgatado!");
     render();
   }
 
   // =========================
-  // LOJA: VALOR ATUAL + MANUTENÇÃO + RENDA PASSIVA
+  // LOJA: patrimônio / manutenção / valorização / financiamentos
   // =========================
-  function getItemDef(id){
-    return SHOP_ITEMS.find(x=>x.id===id) || null;
+  function netWorth(p){
+    ensurePlayer(p);
+    let assets = 0;
+    for(const own of p.owned) assets += (own.currentValue || 0);
+    return assets;
   }
 
-  function currentOwnedValue(owned){
-    // owned: {id,name,type,price,boughtAt,boughtGlobalWeek,lastValueGlobalWeek, currentValue}
-    const def = getItemDef(owned.id);
-    const meta = (def && def.meta) ? def.meta : (owned.meta || {});
-    const gNow = globalWeekNumber();
-    const last = owned.lastValueGlobalWeek ?? owned.boughtGlobalWeek ?? gNow;
-    const weeks = Math.max(0, gNow - last);
-
-    let v = (owned.currentValue ?? owned.price);
-
-    if(weeks <= 0) return { value: v, delta: 0 };
-
-    // pequena aleatoriedade semanal (mercado)
-    const jitter = () => (Math.random()*0.004 - 0.002); // -0.2% a +0.2%
-
-    for(let i=0;i<weeks;i++){
-      if(meta.depPerWeek){
-        v *= (1 - meta.depPerWeek + jitter());
-      } else if(meta.appPerWeek){
-        v *= (1 + meta.appPerWeek + jitter());
-      } else {
-        // sem regra: quase estável
-        v *= (1 + jitter());
-      }
-      v = clamp(v, owned.price*0.15, owned.price*6.0);
-    }
-
-    const delta = v - (owned.currentValue ?? owned.price);
-    return { value: v, delta };
-  }
-
-  function updateAllOwnedValuesAndApplyCashflows(){
+  function applySeasonValuation(){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
 
-    const gNow = globalWeekNumber();
-
-    let upkeepTotal = 0;
-    let passiveIncome = 0;
-    let valueDeltaTotal = 0;
-
-    for(const owned of p.owned){
-      // Atualiza valor
-      const upd = currentOwnedValue(owned);
-      owned.currentValue = upd.value;
-      owned.lastValueGlobalWeek = gNow;
-      valueDeltaTotal += upd.delta;
-
-      const def = getItemDef(owned.id);
-      const meta = (def && def.meta) ? def.meta : (owned.meta || {});
-      if(meta.upkeepPerWeek) upkeepTotal += meta.upkeepPerWeek;
-      if(meta.incomePerWeek) passiveIncome += meta.incomePerWeek;
+    for(const a of p.owned){
+      const cur = Math.max(0, a.currentValue || a.basePrice || 0);
+      const app = a.appreciationSeason || 0;
+      const dep = a.depreciationSeason || 0;
+      const rate = app !== 0 ? app : dep; // um ou outro
+      const newVal = cur * (1 + rate);
+      a.currentValue = Math.round(newVal / 100) * 100;
     }
-
-    // Aplica renda passiva
-    if(passiveIncome > 0){
-      p.wallet += passiveIncome;
-      p.finance.passiveIncomeTotal += passiveIncome;
-      p.finance.lastPassiveIncome = passiveIncome;
-      addNews(`🏪 Renda passiva: +${formatBRL(passiveIncome)} (negócios).`);
-    } else {
-      p.finance.lastPassiveIncome = 0;
-    }
-
-    // Aplica manutenção (se não tiver grana, vira "dívida" simples e afeta moral)
-    if(upkeepTotal > 0){
-      if(p.wallet >= upkeepTotal){
-        p.wallet -= upkeepTotal;
-        p.finance.maintenancePaidTotal += upkeepTotal;
-        p.finance.lastMaintenance = upkeepTotal;
-        addNews(`🧰 Manutenção/contas: -${formatBRL(upkeepTotal)} (itens).`);
-      } else {
-        // dívida
-        const missing = upkeepTotal - p.wallet;
-        p.finance.debt += missing;
-        p.finance.lastMaintenance = upkeepTotal;
-        p.finance.maintenancePaidTotal += p.wallet;
-        p.wallet = 0;
-        p.morale = clamp(p.morale - randInt(2,6), 0, 100);
-        addNews(`🧾 Contas dos itens não pagas! Dívida +${formatBRL(missing)} e moral caiu.`);
-      }
-    } else {
-      p.finance.lastMaintenance = 0;
-    }
-
-    // resumo de variação de patrimônio (só informativo, sem mexer na carteira)
-    p.finance.lastAssetDelta = valueDeltaTotal;
   }
 
-  function totalMarketAssets(){
-    const p = state.player;
-    if(!p) return 0;
-    let total = 0;
-    for(const owned of p.owned){
-      total += (owned.currentValue ?? owned.price);
-    }
-    return total;
-  }
-
-  function totalNetWorth(){
-    const p = state.player;
-    if(!p) return 0;
-    // patrimônio = carteira + investido + ativos - dívida
-    return (p.wallet + (p.bank?.invested || 0) + totalMarketAssets() - (p.finance?.debt || 0));
-  }
-
-  function sellItem(ownedId){
+  function weeklyMaintenanceTick(){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
 
-    const idx = p.owned.findIndex(o => o.id === ownedId);
-    if(idx === -1) return;
+    let totalMaint = 0;
+    for(const a of p.owned){
+      totalMaint += (a.maintenanceWeekly || 0);
+    }
 
-    // garante valor atualizado antes de vender
-    const o = p.owned[idx];
-    const upd = currentOwnedValue(o);
-    o.currentValue = upd.value;
-    o.lastValueGlobalWeek = globalWeekNumber();
+    totalMaint = Math.round(totalMaint / 10) * 10;
 
-    // taxa de venda (corretagem/transferência)
-    const feeRate = 0.02; // 2%
-    const fee = o.currentValue * feeRate;
-    const received = Math.max(0, o.currentValue - fee);
+    if(totalMaint <= 0) return;
 
-    // lucro/prejuízo
-    const profit = received - o.price;
+    if(p.wallet >= totalMaint){
+      p.wallet -= totalMaint;
+      if(Math.random() < 0.40) addNews(`🧰 Manutenção semanal paga: ${formatBRL(totalMaint)}.`);
+    } else {
+      // faltou dinheiro: vira dívida geral + penalidade
+      const deficit = totalMaint - p.wallet;
+      p.wallet = 0;
+      p.finance.generalDebt += deficit;
+      p.reputation = clamp(p.reputation - 1, 1, 100);
+      p.happiness = clamp(p.happiness - 2, 0, 100);
+      addNews(`⚠️ Manutenção atrasada! Faltou ${formatBRL(deficit)} → virou dívida.`);
+      toast("Manutenção virou dívida!");
+    }
+  }
 
-    p.wallet += received;
-    p.finance.salesTotal += received;
-    p.finance.salesProfitTotal += profit;
+  // financiamento: pagamento fixo por semana (amortização simples)
+  function calcWeeklyPayment(principal, rWeekly, weeks){
+    if(weeks <= 0) return principal;
+    if(rWeekly <= 0) return principal / weeks;
+    const r = rWeekly;
+    const denom = 1 - Math.pow(1 + r, -weeks);
+    return (principal * r) / denom;
+  }
 
-    p.owned.splice(idx, 1);
+  function loansTickWeekly(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
 
-    addNews(`💸 Venda: ${o.name} por ${formatBRL(received)} (taxa ${formatBRL(fee)}). ${profit>=0 ? "Lucro" : "Prejuízo"}: ${formatBRL(profit)}.`);
-    toast("Vendido!");
+    const loans = p.finance.loans || [];
+    if(loans.length === 0) return;
+
+    for(const L of loans){
+      if(L.weeksLeft <= 0) continue;
+
+      // aplica juros no principal
+      const interest = L.principal * L.rateWeekly;
+      L.principal += interest;
+
+      const payment = L.weeklyPayment;
+
+      if(p.wallet >= payment){
+        p.wallet -= payment;
+
+        // reduz principal pelo valor pago
+        L.principal -= payment;
+        L.weeksLeft -= 1;
+
+        // small mood reward por estar “em dia”
+        if(Math.random() < 0.20) p.happiness = clamp(p.happiness + 1, 0, 100);
+
+        if(L.principal <= 0 || L.weeksLeft <= 0){
+          L.weeksLeft = 0;
+          L.principal = 0;
+          addNews(`✅ Financiamento quitado: ${L.itemName}.`);
+          toast("Financiamento quitado!");
+        } else if(Math.random() < 0.25){
+          addNews(`📄 Parcela paga (${L.itemName}): ${formatBRL(payment)} • Restam ${L.weeksLeft} sem.`);
+        }
+      } else {
+        // não pagou: vira dívida + penalidade
+        L.missed = (L.missed || 0) + 1;
+
+        const penalty = Math.round((payment * 0.05) / 10) * 10; // 5% da parcela
+        const owed = payment + penalty;
+
+        p.finance.generalDebt += owed;
+        p.reputation = clamp(p.reputation - 1, 1, 100);
+        p.happiness = clamp(p.happiness - 2, 0, 100);
+
+        L.weeksLeft -= 1;
+
+        addNews(`⚠️ Parcela atrasada (${L.itemName})! ${formatBRL(payment)} + multa ${formatBRL(penalty)} → virou dívida.`);
+        toast("Parcela virou dívida!");
+      }
+    }
+
+    // remove quitados
+    p.finance.loans = loans.filter(x => x.weeksLeft > 0 || x.principal > 0);
+  }
+
+  function buyCash(itemId){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+
+    const item = SHOP_ITEMS.find(x=>x.id===itemId);
+    if(!item) return;
+
+    if(p.owned.some(o=>o.id===itemId)) return toast("Você já tem esse item.");
+    if(p.wallet < item.price) return toast("Dinheiro insuficiente.");
+
+    p.wallet -= item.price;
+
+    p.owned.push({
+      id:item.id,
+      name:item.name,
+      type:item.type,
+      boughtAt: Date.now(),
+      basePrice: item.price,
+      currentValue: item.price,
+      maintenanceWeekly: item.maintenanceWeekly || 0,
+      iptuRateSeason: item.iptuRateSeason || 0,
+      moodGain: item.moodGain || 0,
+      repGain: item.repGain || 0,
+      appreciationSeason: item.appreciationSeason || 0,
+      depreciationSeason: item.depreciationSeason || 0
+    });
+
+    p.happiness = clamp(p.happiness + (item.moodGain||0), 0, 100);
+    p.reputation = clamp(p.reputation + (item.repGain||0), 1, 100);
+
+    addNews(`🛒 Compra à vista: ${item.name} por ${formatBRL(item.price)}.`);
+    toast("Comprado!");
     render();
   }
 
-  // =========================
-  // FINANÇAS: SALÁRIO COM IMPOSTO + DÍVIDA
-  // =========================
-  function getTaxRate(){
-    const p = state.player;
-    if(!p) return 0;
-    const base = TAX_BY_LEAGUE[p.leagueId] ?? 0.15;
-    // "faixa" por salário (simples)
-    let extra = 0;
-    if(p.weeklySalary >= 200000) extra = 0.06;
-    else if(p.weeklySalary >= 120000) extra = 0.04;
-    else if(p.weeklySalary >= 60000) extra = 0.02;
-    return clamp(base + extra, 0.10, 0.33);
+  // Modal financiamento
+  function openFinModal(itemId){
+    const p = state.player; if(!p) return;
+    ensurePlayer(p);
+
+    const item = SHOP_ITEMS.find(x=>x.id===itemId);
+    if(!item) return;
+
+    state.fin = { open:true, itemId };
+    $("finModalTag").innerHTML = `📦 <b>${item.name}</b>`;
+
+    $("finModalBody").innerHTML = `
+      <div class="box">
+        <div class="boxTitle">${item.name}</div>
+        <div class="boxSub">Preço: ${formatBRL(item.price)} • Juros do financiamento: <b>0,9%/sem</b></div>
+        <div class="boxMid">
+          <span>Seu saldo: <b>${formatBRL(p.wallet)}</b></span>
+          <span>Dívida atual: <b>${formatBRL(totalDebt(p))}</b></span>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <div class="boxTitle">Escolha entrada e prazo</div>
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <label>Entrada</label>
+            <select id="finDown">
+              <option value="0.20">20%</option>
+              <option value="0.35">35%</option>
+              <option value="0.50">50%</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Prazo</label>
+            <select id="finWeeks">
+              <option value="26">26 semanas</option>
+              <option value="52" selected>52 semanas</option>
+              <option value="104">104 semanas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn btnPrimary" id="btnFinConfirm">Confirmar financiamento</button>
+          <button class="btn" id="btnFinCancel">Cancelar</button>
+        </div>
+
+        <div class="tiny" style="margin-top:10px">
+          Se faltar dinheiro na parcela, ela vira dívida com multa de 5% e sua reputação cai.
+        </div>
+      </div>
+    `;
+
+    $("finModalBack").classList.add("show");
+    $("btnFinCancel").onclick = closeFinModal;
+    $("btnFinConfirm").onclick = confirmFinancing;
   }
 
-  function payWeeklySalary(){
-    const p = state.player;
+  function closeFinModal(){
+    $("finModalBack").classList.remove("show");
+    state.fin = { open:false, itemId:null };
+  }
 
-    // salário bruto
-    const gross = p.weeklySalary;
+  function confirmFinancing(){
+    const p = state.player; if(!p) return;
+    ensurePlayer(p);
 
-    // imposto
-    const taxRate = getTaxRate();
-    const tax = Math.round(gross * taxRate);
+    const item = SHOP_ITEMS.find(x=>x.id===state.fin.itemId);
+    if(!item) return;
 
-    // paga líquido
-    const net = Math.max(0, gross - tax);
+    if(p.owned.some(o=>o.id===item.id)) return toast("Você já tem esse item.");
+
+    const downRate = Number($("finDown").value);
+    const weeks = Number($("finWeeks").value);
+    const rWeekly = 0.009;
+
+    const down = Math.round((item.price * downRate)/100)*100;
+    if(p.wallet < down) return toast("Você não tem dinheiro pra entrada.");
+
+    const principal = item.price - down;
+    const weeklyPay = calcWeeklyPayment(principal, rWeekly, weeks);
+    const weeklyPayment = Math.round(weeklyPay / 10) * 10;
+
+    // cobra entrada
+    p.wallet -= down;
+
+    // adiciona item
+    p.owned.push({
+      id:item.id,
+      name:item.name,
+      type:item.type,
+      boughtAt: Date.now(),
+      basePrice: item.price,
+      currentValue: item.price,
+      maintenanceWeekly: item.maintenanceWeekly || 0,
+      iptuRateSeason: item.iptuRateSeason || 0,
+      moodGain: item.moodGain || 0,
+      repGain: item.repGain || 0,
+      appreciationSeason: item.appreciationSeason || 0,
+      depreciationSeason: item.depreciationSeason || 0
+    });
+
+    // cria loan
+    p.finance.loans.push({
+      id: "loan_" + item.id + "_" + Date.now(),
+      itemId: item.id,
+      itemName: item.name,
+      principal: principal,
+      rateWeekly: rWeekly,
+      weeksLeft: weeks,
+      weeksTotal: weeks,
+      weeklyPayment: weeklyPayment,
+      missed: 0,
+      createdAt: Date.now()
+    });
+
+    // impacto “imediato”
+    p.happiness = clamp(p.happiness + Math.max(1, Math.round((item.moodGain||0)*0.7)), 0, 100);
+    p.reputation = clamp(p.reputation + Math.max(0, Math.round((item.repGain||0)*0.7)), 1, 100);
+
+    addNews(`📄 Financiou ${item.name}. Entrada ${formatBRL(down)} • Parcela ~${formatBRL(weeklyPayment)}/sem por ${weeks} semanas.`);
+    toast("Financiamento criado!");
+    closeFinModal();
+    render();
+  }
+
+  function sellItem(ownedIndex){
+    const p = state.player; if(!p) return;
+    ensurePlayer(p);
+
+    const item = p.owned[ownedIndex];
+    if(!item) return;
+
+    // taxa 5%
+    const gross = Math.max(0, item.currentValue || 0);
+    const fee = Math.round((gross * 0.05) / 10) * 10;
+    const net = Math.max(0, gross - fee);
+
     p.wallet += net;
 
-    p.finance.taxesPaidTotal += tax;
-    p.finance.lastTax = tax;
-    p.finance.lastNetSalary = net;
+    // perde parte de humor/reputação se vender algo “de status”
+    const moodLoss = Math.max(0, Math.round((item.moodGain||0) * 0.5));
+    const repLoss = Math.max(0, Math.round((item.repGain||0) * 0.5));
+    p.happiness = clamp(p.happiness - moodLoss, 0, 100);
+    p.reputation = clamp(p.reputation - repLoss, 1, 100);
 
-    addNews(`💰 Salário: ${formatBRL(net)} líquido (imposto -${formatBRL(tax)}).`);
+    p.owned.splice(ownedIndex, 1);
 
-    // contrato
-    p.contractWeeks = Math.max(0, p.contractWeeks - 1);
-
-    // se tem dívida, tenta abater automaticamente 10% do líquido (mínimo 500)
-    if(p.finance.debt > 0){
-      const pay = clamp(Math.round(net * 0.10), 500, net);
-      const paid = Math.min(pay, p.finance.debt, p.wallet);
-      if(paid > 0){
-        p.wallet -= paid;
-        p.finance.debt -= paid;
-        addNews(`🧾 Pagamento de dívida: -${formatBRL(paid)}. Dívida restante: ${formatBRL(p.finance.debt)}.`);
-      }
-    }
+    addNews(`💸 Vendeu ${item.name} por ${formatBRL(net)} (taxa ${formatBRL(fee)}).`);
+    toast("Item vendido!");
+    render();
   }
 
   // =========================
@@ -1152,9 +1438,7 @@
 
     const age = randInt(15, 18);
     const startType = (typeChoice === "AUTO") ? decideStartTypeByAge(age) : typeChoice;
-
     const leagueId = (leagueChoice === "AUTO") ? decideStartLeagueByNat(nat) : leagueChoice;
-
     const position = genPosition($("selPos").value);
 
     const weeklySalary = genSalary(startType);
@@ -1164,78 +1448,38 @@
 
     const rep = baseReputation(startType, leagueId);
     const contractWeeks = genContractWeeks(startType);
-    const releaseClause = calcReleaseClause(weeklySalary, startType);
 
     state.player = {
       name, nationality:nat, difficulty:diff,
-      age, position,
-      type: startType,
-
-      attrs,
-      overall,
-      potential,
-
-      leagueId,
-      leagueName: leagueInfo(leagueId).name,
+      age, position, type: startType,
+      attrs, overall, potential,
+      leagueId, leagueName: leagueInfo(leagueId).name,
       club: null,
-
       weeklySalary,
       contractWeeks,
-      releaseClause,
-
+      releaseClause: calcReleaseClause(weeklySalary, startType),
       morale: randInt(60, 90),
       fitness: randInt(70, 95),
       reputation: rep,
-
       injuredWeeks: 0,
-
       wallet: 0,
 
-      bank: {
-        name: "Santander",
-        invested: 0,
-        totalInterest: 0,
-        lastInterest: 0
-      },
-
+      bank: { name:"Santander", invested:0, totalInterest:0, lastInterest:0 },
       finance: {
-        taxesPaidTotal: 0,
-        lastTax: 0,
-        lastNetSalary: 0,
-
-        passiveIncomeTotal: 0,
-        lastPassiveIncome: 0,
-
-        maintenancePaidTotal: 0,
-        lastMaintenance: 0,
-
-        debt: 0,
-
-        lastAssetDelta: 0,
-
-        salesTotal: 0,
-        salesProfitTotal: 0
+        seasonSalaryEarned: 0,
+        seasonBonusesEarned: 0,
+        taxDebt: 0,
+        generalDebt: 0,
+        lastTaxDueTotal: 0,
+        totalFines: 0,
+        lastDebtInterest: 0,
+        loans: []
       },
-
       owned: [],
+      happiness: randInt(55, 80),
 
-      seasonStats: {
-        matches: 0,
-        goals: 0,
-        assists: 0,
-        cleanSheets: 0,
-        avgRating: 6.6
-      },
-
-      careerStats: {
-        matches: 0,
-        goals: 0,
-        assists: 0,
-        cleanSheets: 0
-      },
-
-      seasonStartOverall: overall,
-      seasonStartRep: rep
+      seasonStats: { matches:0, goals:0, assists:0, cleanSheets:0, avgRating:6.6 },
+      careerStats: { matches:0, goals:0, assists:0, cleanSheets:0 }
     };
 
     state.season = 1;
@@ -1243,17 +1487,15 @@
     state.news = [];
     state.offers = [];
     state.history = [];
-    state.objectives = [];
+    state.tax = { pending:false, seasonRef:0, dueIncome:0, dueIPTU:0, dueTotal:0, attempts:0 };
 
     addNews(`🎲 Jogador gerado: ${name} (${nat}), ${age} anos, ${position} • Overall ${overall}.`);
-    addNews(`Atributos: PAC ${attrs.PAC}, SHO ${attrs.SHO}, PAS ${attrs.PAS}, DEF ${attrs.DEF}, PHY ${attrs.PHY}.`);
-    addNews(`Agora escolha seu clube inicial (3 opções).`);
     toast("Jogador gerado!");
     render();
   }
 
   // =========================
-  // ESCOLHA ENTRE 3 CLUBES
+  // CLUBE INICIAL
   // =========================
   let clubPick = { options:[], selectedIndex: null };
 
@@ -1262,12 +1504,10 @@
     if(!p) return;
 
     const l = leagueInfo(p.leagueId);
-
     const picks = new Set();
-    while(picks.size < 3){
-      picks.add(choice(l.teams));
-    }
-    const options = [...picks].map((clubName)=>{
+    while(picks.size < 3) picks.add(choice(l.teams));
+
+    clubPick.options = [...picks].map((clubName)=>{
       const strength = randInt(50, 95);
       const salaryMul = 0.85 + (strength/200);
       const repMul = 0.85 + (strength/220);
@@ -1283,7 +1523,6 @@
       };
     });
 
-    clubPick.options = options;
     clubPick.selectedIndex = null;
   }
 
@@ -1292,7 +1531,7 @@
     const p = state.player;
     const l = leagueInfo(p.leagueId);
 
-    $("pickHint").innerHTML = `Você vai começar na liga <b>${l.name}</b>. Escolha 1 clube para iniciar sua carreira.`;
+    $("pickHint").innerHTML = `Você vai começar na liga <b>${l.name}</b>. Escolha 1 clube:`;
 
     const box = $("clubPickList");
     box.innerHTML = "";
@@ -1302,10 +1541,10 @@
       el.style.cursor = "pointer";
       el.innerHTML = `
         <div class="boxTitle">🏟️ ${o.club}</div>
-        <div class="boxSub">${o.leagueName} • Força estimada ${o.strength}</div>
+        <div class="boxSub">${o.leagueName} • Força ${o.strength}</div>
         <div class="boxMid">
-          <span>💰 Salário: <b>${formatBRL(o.weeklySalary)}/sem</b></span>
-          <span>🏅 Bônus reputação: <b>+${o.repBoost}</b></span>
+          <span>💰 <b>${formatBRL(o.weeklySalary)}/sem</b></span>
+          <span>🏅 <b>+${o.repBoost}</b> reputação</span>
         </div>
         <div class="tiny">Clique para selecionar</div>
       `;
@@ -1332,13 +1571,9 @@
     p.club = o.club;
     p.weeklySalary = o.weeklySalary;
     p.reputation = clamp(p.reputation + o.repBoost, 1, 100);
-
     p.releaseClause = calcReleaseClause(p.weeklySalary, p.type);
 
-    buildObjectives();
-
     addNews(`✅ Clube escolhido: ${p.club} (${o.leagueName}). Salário: ${formatBRL(p.weeklySalary)}/sem.`);
-    addNews(`🎯 Objetivos da temporada foram definidos.`);
     toast("Carreira iniciada!");
     showScreen("screenGame");
     render();
@@ -1347,6 +1582,14 @@
   // =========================
   // SIMULAÇÃO
   // =========================
+  function payWeeklySalary(){
+    const p = state.player;
+    ensurePlayer(p);
+    p.wallet += p.weeklySalary;
+    p.finance.seasonSalaryEarned += p.weeklySalary;
+    p.contractWeeks = Math.max(0, p.contractWeeks - 1);
+  }
+
   function injuryCheck(){
     const p = state.player;
     if(p.injuredWeeks > 0) return;
@@ -1354,13 +1597,13 @@
     const d = DIFF[p.difficulty] || DIFF.MEDIO;
     const base = 0.012 * d.injuryMul;
     const fitnessRisk = clamp((60 - p.fitness) / 120, 0, 0.20);
-    const hardPlayRisk = (Math.random() < 0.15) ? 0.01 : 0.0;
-    const chance = clamp(base + fitnessRisk + hardPlayRisk, 0.004, 0.12);
+    const chance = clamp(base + fitnessRisk, 0.004, 0.12);
 
     if(Math.random() < chance){
       const weeks = clamp(randInt(1, 7) + (p.fitness < 55 ? 2 : 0), 1, 10);
       p.injuredWeeks = weeks;
       p.morale = clamp(p.morale - randInt(4, 10), 0, 100);
+      p.happiness = clamp(p.happiness - 1, 0, 100);
       addNews(`🩹 Lesão! Fora por ${weeks} semana(s).`);
       toast("Lesão!");
     }
@@ -1372,23 +1615,17 @@
       p.injuredWeeks -= 1;
       p.fitness = clamp(p.fitness + randInt(8, 16), 0, 100);
       if(p.injuredWeeks === 0){
-        addNews("✅ Recuperado da lesão! Apto para jogar.");
+        addNews("✅ Recuperado da lesão!");
         toast("Recuperado!");
-      } else {
-        addNews(`🩹 Recuperação: faltam ${p.injuredWeeks} semana(s).`);
       }
     }
   }
 
-  function canPlay(){
-    const p = state.player;
-    return p.injuredWeeks === 0;
-  }
+  function canPlay(){ return state.player.injuredWeeks === 0; }
 
   function playChance(){
     const p = state.player;
     const d = DIFF[p.difficulty] || DIFF.MEDIO;
-
     const base = clamp((p.fitness + p.morale) / 200, 0.35, 0.92);
     const roleMul = (p.type === "Base") ? 0.88 : 1.0;
     const repMul = clamp(0.85 + (p.reputation/300), 0.85, 1.15);
@@ -1398,7 +1635,6 @@
   function expectedGoalAssistProbs(){
     const p = state.player;
     const skill = p.overall / 100;
-
     const shot = p.attrs.SHO / 100;
     const pass = p.attrs.PAS / 100;
     const pace = p.attrs.PAC / 100;
@@ -1412,32 +1648,12 @@
     if(p.position === "VOL") { goalP *= 0.55; assistP *= 0.85; }
     if(p.position === "ZAG") { goalP *= 0.22; assistP *= 0.30; }
     if(p.position === "LAT") { goalP *= 0.38; assistP *= 0.90; }
-    if(p.position === "GOL"){
-      goalP = 0.003;
-      assistP = 0.008;
-    }
+    if(p.position === "GOL"){ goalP = 0.003; assistP = 0.008; }
 
     goalP *= clamp(0.85 + (p.fitness/250) + (p.morale/350), 0.70, 1.25);
     assistP *= clamp(0.85 + (p.fitness/260) + (p.morale/360), 0.70, 1.25);
 
     return { goalP: clamp(goalP, 0, 0.55), assistP: clamp(assistP, 0, 0.45) };
-  }
-
-  function updateReputationFromMatch(rating, played){
-    const p = state.player;
-    const l = leagueInfo(p.leagueId);
-    if(!played){
-      if(Math.random() < 0.30) p.reputation = clamp(p.reputation - 1, 1, 100);
-      return;
-    }
-    let delta = 0;
-    if(rating >= 8.4) delta += 3;
-    else if(rating >= 7.6) delta += 2;
-    else if(rating >= 7.0) delta += 1;
-    else if(rating <= 6.0) delta -= 1;
-
-    delta = Math.round(delta * l.repWeight);
-    p.reputation = clamp(p.reputation + delta, 1, 100);
   }
 
   function growthFromPerformance(rating){
@@ -1457,20 +1673,13 @@
     chance = clamp(chance, 0.02, 0.65);
 
     if(Math.random() < chance){
-      const inc = (rating >= 8.4) ? randInt(1,2) : (rating >= 7.6 ? 1 : (Math.random() < 0.35 ? 1 : 0));
-      if(inc > 0){
-        p.attrs.PAC = clamp(p.attrs.PAC + randInt(0,1), 35, 99);
-        p.attrs.SHO = clamp(p.attrs.SHO + randInt(0,1), 35, 99);
-        p.attrs.PAS = clamp(p.attrs.PAS + randInt(0,1), 35, 99);
-        p.attrs.DEF = clamp(p.attrs.DEF + randInt(0,1), 35, 99);
-        p.attrs.PHY = clamp(p.attrs.PHY + randInt(0,1), 35, 99);
-
-        const pos = posInfo(p.position);
-        const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1])[0][0];
-        p.attrs[dom] = clamp(p.attrs[dom] + 1, 35, 99);
-
-        p.overall = calcOverallFromAttrs(p.position, p.attrs);
-        addNews(`📈 Evolução: overall agora ${p.overall} (atributos melhoraram).`);
+      const pos = posInfo(p.position);
+      const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1])[0][0];
+      p.attrs[dom] = clamp(p.attrs[dom] + 1, 35, 99);
+      const newOvr = calcOverallFromAttrs(p.position, p.attrs);
+      if(newOvr > p.overall){
+        p.overall = newOvr;
+        addNews(`📈 Evolução: overall agora ${p.overall}.`);
       }
     }
   }
@@ -1479,18 +1688,17 @@
     const p = state.player;
 
     if(!canPlay()){
-      addNews(`🚫 Lesionado: você não pode jogar nesta semana.`);
-      return { played:false, rating:null };
+      addNews("🚫 Lesionado: não jogou esta semana.");
+      return;
     }
 
     const played = Math.random() < playChance();
-
     if(!played){
       p.fitness = clamp(p.fitness + randInt(2, 6), 0, 100);
       p.morale = clamp(p.morale - randInt(0, 2), 0, 100);
-      addNews(`Você ficou no banco/fora no ${p.club}.`);
-      updateReputationFromMatch(0, false);
-      return { played:false, rating:null };
+      if(Math.random() < 0.35) p.happiness = clamp(p.happiness - 1, 0, 100);
+      addNews(`Você ficou no banco no ${p.club}.`);
+      return;
     }
 
     p.seasonStats.matches += 1;
@@ -1500,13 +1708,7 @@
     const g = (Math.random() < goalP) ? 1 : 0;
     const a = (Math.random() < assistP) ? 1 : 0;
 
-    let cs = 0;
-    if(p.position === "GOL"){
-      const baseCS = clamp(0.20 + (p.overall/250) + (p.reputation/450), 0.15, 0.65);
-      cs = (Math.random() < baseCS) ? 1 : 0;
-      p.seasonStats.cleanSheets += cs;
-      p.careerStats.cleanSheets += cs;
-    } else {
+    if(p.position !== "GOL"){
       p.seasonStats.goals += g;
       p.seasonStats.assists += a;
       p.careerStats.goals += g;
@@ -1517,86 +1719,60 @@
     let rating = 6.15 + skill * 2.25
       + (g ? 0.85 : 0)
       + (a ? 0.55 : 0)
-      + (cs ? 0.60 : 0)
       + (Math.random()*0.6 - 0.3);
 
-    if(["ZAG","VOL","LAT"].includes(p.position) && !g && !a){
-      if(Math.random() < 0.20 + skill*0.25) rating += 0.25;
-    }
-
     rating = clamp(rating, 5.4, 9.7);
-
     p.seasonStats.avgRating = (p.seasonStats.avgRating * 0.88) + (rating * 0.12);
 
     p.fitness = clamp(p.fitness - randInt(6, 14), 0, 100);
-
     p.morale = clamp(p.morale + (rating >= 7.2 ? randInt(2,5) : rating <= 6.2 ? -randInt(1,4) : randInt(0,2)), 0, 100);
 
-    updateReputationFromMatch(rating, true);
+    // felicidade
+    if(rating >= 8.0) p.happiness = clamp(p.happiness + 1, 0, 100);
+    if(rating <= 6.1) p.happiness = clamp(p.happiness - 1, 0, 100);
+
     growthFromPerformance(rating);
 
     const parts = [];
-    if(p.position === "GOL"){
-      if(cs) parts.push("🧤 Clean sheet!");
-    } else {
-      if(g) parts.push("⚽ Gol!");
-      if(a) parts.push("🅰️ Assistência!");
-    }
+    if(g) parts.push("⚽ Gol!");
+    if(a) parts.push("🅰️ Assistência!");
     if(parts.length === 0) parts.push("Jogo ok.");
 
-    addNews(`${parts.join(" ")} Nota: ${rating.toFixed(1)} • ${p.club} (${p.leagueName}).`);
-    return { played:true, rating };
+    addNews(`${parts.join(" ")} Nota: ${rating.toFixed(1)} • ${p.club}.`);
   }
 
   function midSeasonWindowIfNeeded(){
     if(state.week !== state.midWindowWeek) return;
-    addNews(`🪟 Janela aberta! Chegaram novas propostas.`);
+    addNews("🪟 Janela aberta! Chegaram novas propostas.");
     generateOffers("MID");
     toast("Janela aberta!");
   }
 
-  function endContractWarning(){
-    const p = state.player;
-    if(p.contractWeeks === 0){
-      addNews("📝 Seu contrato acabou! Renove ou espere propostas.");
-    } else if(p.contractWeeks <= 10){
-      addNews(`📝 Contrato termina em ${p.contractWeeks} semanas.`);
-    }
-  }
-
   function playWeek(){
     const p = state.player;
-    if(!p || !p.club){
-      toast("Crie um jogador e escolha o clube.");
-      return;
-    }
+    if(!p || !p.club){ toast("Crie um jogador e escolha o clube."); return; }
 
-    // salário + imposto + dívida
+    // salário
     payWeeklySalary();
 
-    // Banco 1%/sem
+    // manutenção (itens)
+    weeklyMaintenanceTick();
+
+    // parcelas (financiamentos)
+    loansTickWeekly();
+
+    // banco e dívidas
     bankTickWeekly();
-    if(p.bank.lastInterest > 0){
-      addNews(`🏦 Santander: rendimento +${formatBRL(p.bank.lastInterest)} (1%).`);
-    }
+    debtTickWeekly();
 
-    // LOJA: atualiza valores + renda passiva + manutenção
-    updateAllOwnedValuesAndApplyCashflows();
-
-    // recuperação/lesão
+    // saúde e jogo
     recoveryTick();
     injuryCheck();
-
-    // jogo
     matchSimulation();
 
     // janela
     midSeasonWindowIfNeeded();
 
-    // aviso de contrato
-    endContractWarning();
-
-    // avançar semana
     state.week += 1;
     if(state.week > state.weeksPerSeason){
       endSeason();
@@ -1611,7 +1787,7 @@
     if(!p || !p.club) return;
 
     if(p.injuredWeeks > 0){
-      addNews("🏥 Lesionado: treino virou fisioterapia.");
+      addNews("🏥 Treino virou fisioterapia.");
       p.fitness = clamp(p.fitness + randInt(6, 14), 0, 100);
       p.morale = clamp(p.morale + randInt(0, 2), 0, 100);
       render();
@@ -1619,9 +1795,7 @@
     }
 
     const d = DIFF[p.difficulty] || DIFF.MEDIO;
-
-    const fatigue = randInt(4, 10);
-    p.fitness = clamp(p.fitness - fatigue, 0, 100);
+    p.fitness = clamp(p.fitness - randInt(4, 10), 0, 100);
 
     let gainChance = clamp(0.22 + (p.morale/320) + (p.fitness/460), 0.18, 0.65);
     gainChance *= d.growthMul;
@@ -1631,23 +1805,15 @@
       const pos = posInfo(p.position);
       const dom = Object.entries(pos.weights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
       dom.forEach(k => p.attrs[k] = clamp(p.attrs[k] + randInt(0,1), 35, 99));
-      const keys = ["PAC","SHO","PAS","DEF","PHY"];
-      p.attrs[choice(keys)] = clamp(p.attrs[choice(keys)] + (Math.random()<0.5?1:0), 35, 99);
-
       const newOvr = calcOverallFromAttrs(p.position, p.attrs);
       if(newOvr > p.overall){
         p.overall = newOvr;
-        addNews(`🏋️ Treino forte! Overall subiu para ${p.overall}.`);
-      } else {
-        addNews("🏋️ Treino bom. Mantendo o ritmo.");
-      }
-    } else {
-      addNews("🏋️ Treino feito. Mantendo o ritmo.");
-    }
+        addNews(`🏋️ Treino forte! Overall: ${p.overall}.`);
+        p.happiness = clamp(p.happiness + 1, 0, 100);
+      } else addNews("🏋️ Treino bom.");
+    } else addNews("🏋️ Treino feito.");
 
     p.morale = clamp(p.morale + randInt(0, 3), 0, 100);
-    if(Math.random() < 0.18) p.reputation = clamp(p.reputation + 1, 1, 100);
-
     render();
   }
 
@@ -1656,68 +1822,49 @@
     if(!p || !p.club) return;
 
     if(p.injuredWeeks > 0){
-      addNews("🛌 Descanso + tratamento: recuperação acelerada.");
+      addNews("🛌 Descanso + tratamento (recuperação melhor).");
       p.fitness = clamp(p.fitness + randInt(12, 24), 0, 100);
       p.morale = clamp(p.morale + randInt(1, 4), 0, 100);
+      p.happiness = clamp(p.happiness + 1, 0, 100);
       render();
       return;
     }
 
     p.fitness = clamp(p.fitness + randInt(10, 22), 0, 100);
     p.morale = clamp(p.morale + randInt(1, 4), 0, 100);
-    addNews("🛌 Descanso: físico e moral melhoraram.");
+    p.happiness = clamp(p.happiness + 1, 0, 100);
+    addNews("🛌 Descanso: físico e moral subiram.");
     render();
   }
 
   // =========================
-  // PROPOSTAS / NEGOCIAÇÕES
+  // PROPOSTAS
   // =========================
   function genProject(){
-    const opts = [
-      "Titularidade rápida",
-      "Projeto jovem",
-      "Time competitivo",
-      "Reconstrução do elenco",
-      "Chance de ser estrela",
-      "Foco em títulos"
-    ];
-    return choice(opts);
+    return choice(["Titularidade rápida","Projeto jovem","Time competitivo","Reconstrução","Chance de ser estrela","Foco em títulos"]);
   }
-
   function pickOfferLeague(){
     const p = state.player;
-    // 30% chance de ser outra liga
-    if(Math.random() < 0.70) return p.leagueId;
-    const other = LEAGUES.map(x=>x.id).filter(id=>id!==p.leagueId);
-    return choice(other.length ? other : ["BR"]);
+    return (Math.random() < 0.70) ? p.leagueId : (p.leagueId === "BR" ? "EN" : "BR");
   }
-
-  function genOfferClub(excludeKeySet){
+  function genOfferClub(exclude){
     const leagueId = pickOfferLeague();
     const league = leagueInfo(leagueId);
     let club = choice(league.teams);
     let tries = 0;
-    while(excludeKeySet.has(club + "|" + leagueId) && tries < 18){
-      club = choice(league.teams);
-      tries++;
+    while(exclude.has(club + "|" + leagueId) && tries < 18){
+      club = choice(league.teams); tries++;
     }
     return { leagueId, leagueName: league.name, club };
   }
-
   function genOfferSalary(){
     const p = state.player;
     const league = leagueInfo(p.leagueId);
-
     const base = 32000 + (p.overall * 1400) + (p.reputation * 650);
     const leagueJitter = (league.id === "EN") ? randInt(0, 30000) : randInt(-5000, 15000);
     const jitter = randInt(-15000, 28000) + leagueJitter;
-
-    const min = (p.type === "Base") ? 12000 : 25000;
-    const max = 350000;
-
-    return clamp(Math.round((base + jitter)/1000)*1000, min, max);
+    return clamp(Math.round((base + jitter)/1000)*1000, 12000, 350000);
   }
-
   function genOfferContractWeeks(){
     const p = state.player;
     const base = randInt(52, 208);
@@ -1733,12 +1880,8 @@
     const offersCount = (windowType === "MID") ? randInt(2, 4) : randInt(3, 5);
 
     const used = new Set([p.club + "|" + p.leagueId]);
-
-    if(windowType === "MID"){
-      state.offers.forEach(o => used.add(o.club + "|" + o.leagueId));
-    } else {
-      state.offers = [];
-    }
+    if(windowType !== "MID") state.offers = [];
+    else state.offers.forEach(o => used.add(o.club + "|" + o.leagueId));
 
     for(let i=0;i<offersCount;i++){
       const pick = genOfferClub(used);
@@ -1763,42 +1906,36 @@
         windowLabel: label
       });
     }
-
-    addNews(`📨 Você recebeu ${offersCount} proposta(s) — ${label}.`);
-    render();
+    addNews(`📨 Recebeu ${offersCount} proposta(s) — ${label}.`);
   }
 
   function acceptOffer(idx){
     const p = state.player;
     const o = state.offers[idx];
     if(!p || !o) return;
+    ensurePlayer(p);
 
     p.wallet += o.signingBonus;
+    p.finance.seasonBonusesEarned += o.signingBonus;
 
     p.club = o.club;
     p.leagueId = o.leagueId;
     p.leagueName = o.leagueName;
-
     p.weeklySalary = o.weeklySalary;
     p.contractWeeks = o.contractWeeks;
     p.releaseClause = o.releaseClause;
 
-    if(p.type === "Base" && (p.age >= 16 || p.weeklySalary >= 40000)){
-      p.type = "Profissional";
-      addNews("🔵 Você agora é do PROFISSIONAL.");
-    }
-
-    p.reputation = clamp(p.reputation + randInt(1, 4), 1, 100);
-
-    addNews(`✅ Você assinou com ${o.club} (${o.leagueName})! Salário ${formatBRL(o.weeklySalary)}/sem • Luvas ${formatBRL(o.signingBonus)}.`);
+    p.happiness = clamp(p.happiness + 2, 0, 100);
+    addNews(`✅ Assinou com ${o.club}! Salário ${formatBRL(o.weeklySalary)}/sem • Luvas ${formatBRL(o.signingBonus)}.`);
     state.offers = [];
-    render();
     toast("Transferência feita!");
+    render();
   }
 
   function renewContract(){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
 
     const urgency = (p.contractWeeks <= 10) ? 1.15 : (p.contractWeeks <= 26 ? 1.08 : 1.02);
     const perf = 1 + (p.reputation/180) + (p.overall/250);
@@ -1821,49 +1958,18 @@
       windowLabel: "Negociação"
     });
 
-    addNews(`🔁 Renovação: ${formatBRL(newSalary)}/sem • ${newWeeks} semanas • Luvas ${formatBRL(signingBonus)}.`);
+    addNews(`🔁 Renovação criada: ${formatBRL(newSalary)}/sem • ${newWeeks} semanas • Luvas ${formatBRL(signingBonus)}.`);
     toast("Renovação criada!");
     render();
   }
 
   // =========================
-  // LOJA: COMPRAR / VENDER
+  // FIM DE TEMPORADA
   // =========================
-  function buyItem(itemId){
+  function pushHistory(){
     const p = state.player;
     if(!p) return;
-
-    const item = SHOP_ITEMS.find(x=>x.id===itemId);
-    if(!item) return;
-
-    const already = p.owned.some(o=>o.id===itemId);
-    if(already) return toast("Você já comprou isso.");
-
-    if(p.wallet < item.price) return toast("Dinheiro insuficiente.");
-
-    p.wallet -= item.price;
-
-    const gNow = globalWeekNumber();
-    p.owned.push({
-      ...item,
-      meta: item.meta || {},
-      boughtAt: Date.now(),
-      boughtGlobalWeek: gNow,
-      lastValueGlobalWeek: gNow,
-      currentValue: item.price
-    });
-
-    addNews(`🛒 Compra: ${item.name} por ${formatBRL(item.price)}.`);
-    toast("Comprado!");
-    render();
-  }
-
-  // =========================
-  // HISTÓRICO / FIM DE TEMPORADA
-  // =========================
-  function seasonSummaryToHistory(){
-    const p = state.player;
-    if(!p) return;
+    ensurePlayer(p);
 
     state.history.unshift({
       season: state.season,
@@ -1871,78 +1977,80 @@
       league: p.leagueName,
       age: p.age,
       position: p.position,
-      overallStart: p.seasonStartOverall,
-      overallEnd: p.overall,
-      repStart: p.seasonStartRep,
-      repEnd: p.reputation,
-      stats: { ...p.seasonStats }
+      overall: p.overall,
+      rep: p.reputation,
+      happy: p.happiness,
+      stats: { ...p.seasonStats },
+      taxDue: p.finance.lastTaxDueTotal || 0,
+      debtEnd: totalDebt(p),
+      netWorth: netWorth(p),
+      loans: (p.finance.loans||[]).length
     });
 
     state.history = state.history.slice(0, 20);
   }
 
-  function seasonSummaryNews(){
-    const p = state.player;
-    const ovrGain = p.overall - p.seasonStartOverall;
-    const repGain = p.reputation - p.seasonStartRep;
-
-    const parts = [];
-    parts.push(`📊 Resumo T${state.season}: Jogos ${p.seasonStats.matches}, Gols ${p.seasonStats.goals}, Assists ${p.seasonStats.assists}, Nota ${p.seasonStats.avgRating.toFixed(2)}.`);
-    if(p.position === "GOL") parts.push(`Clean sheets ${p.seasonStats.cleanSheets}.`);
-    parts.push(`Overall ${p.seasonStartOverall}→${p.overall} (${ovrGain>=0?"+":""}${ovrGain}) • Reputação ${p.seasonStartRep}→${p.reputation} (${repGain>=0?"+":""}${repGain}).`);
-    addNews(parts.join(" "));
-  }
-
-  function resetSeasonStats(){
-    const p = state.player;
-    p.seasonStats = {
-      matches: 0,
-      goals: 0,
-      assists: 0,
-      cleanSheets: 0,
-      avgRating: 6.6
-    };
-  }
-
   function endSeason(){
     const p = state.player;
     if(!p) return;
+    ensurePlayer(p);
 
-    evalObjectivesEndSeason();
+    // aplica valorização/desvalorização
+    applySeasonValuation();
 
-    seasonSummaryNews();
-    seasonSummaryToHistory();
+    // guarda histórico
+    pushHistory();
 
-    addNews(`🏁 Temporada ${state.season} encerrada! Gerando propostas...`);
+    addNews(`🏁 Temporada ${state.season} terminou!`);
     generateOffers("END");
+
+    // gera impostos (renda + IPTU) e abre decisão
+    createSeasonTaxes();
+
+    render();
+  }
+
+  function resetSeasonFinanceForNewSeason(){
+    const p = state.player;
+    ensurePlayer(p);
+    p.finance.seasonSalaryEarned = 0;
+    p.finance.seasonBonusesEarned = 0;
+  }
+
+  function startNextSeason(){
+    const p = state.player;
+    if(!p) return;
+    ensurePlayer(p);
+
+    if(state.tax.pending) return; // só começa depois de decidir
 
     state.season += 1;
     state.week = 1;
 
+    // envelhece
     p.age = clamp(p.age + 1, 15, 40);
 
-    if(p.type === "Base" && p.age >= 17 && Math.random() < 0.60){
-      p.type = "Profissional";
-      p.weeklySalary = clamp(p.weeklySalary, 40000, 120000);
-      addNews("🔵 Promoção: agora você é do PROFISSIONAL.");
-    }
+    // reset stats de temporada
+    p.seasonStats = { matches:0, goals:0, assists:0, cleanSheets:0, avgRating:6.6 };
 
-    p.fitness = clamp(p.fitness + randInt(12, 28), 0, 100);
+    // reset renda temporada
+    resetSeasonFinanceForNewSeason();
+
+    // recuperação
+    p.fitness = clamp(p.fitness + randInt(10, 22), 0, 100);
     p.morale = clamp(p.morale + randInt(2, 7), 0, 100);
     p.injuredWeeks = 0;
 
-    resetSeasonStats();
+    // felicidade “respira”
+    p.happiness = clamp(p.happiness + 1, 0, 100);
 
-    p.seasonStartOverall = p.overall;
-    p.seasonStartRep = p.reputation;
-    buildObjectives();
-
-    render();
+    addNews(`🎬 Temporada ${state.season} começou!`);
     toast("Nova temporada!");
+    render();
   }
 
   // =========================
-  // UI: TABS / RENDER
+  // UI
   // =========================
   function showScreen(which){
     $("screenStart").classList.remove("active");
@@ -1962,73 +2070,46 @@
 
   function renderPlayerPanel(){
     const p = state.player;
-    if(!p){
-      $("playerPanel").innerHTML = `<div class="hint">Nenhum jogador criado ainda.</div>`;
-      return;
-    }
+    if(!p){ $("playerPanel").innerHTML = `<div class="hint">Nenhum jogador ainda.</div>`; return; }
+    ensurePlayer(p);
 
-    const roleTag = p.type === "Base" ? "🟢 Base" : "🔵 Profissional";
     const pos = posInfo(p.position);
-    const d = DIFF[p.difficulty] || DIFF.MEDIO;
+    const debt = totalDebt(p);
 
-    const injuryLine = p.injuredWeeks > 0
-      ? `<span class="tag" style="border-color: rgba(255,93,93,.35)">🩹 Lesão: <b>${p.injuredWeeks} sem</b></span>`
+    const inj = p.injuredWeeks > 0
+      ? `<span class="tag" style="border-color: rgba(255,93,93,.35)">🩹 <b>${p.injuredWeeks} sem</b></span>`
       : `<span class="tag">✅ Sem lesão</span>`;
 
-    const taxRate = Math.round(getTaxRate() * 100);
+    const debtStyle = debt > 0 ? `style="border-color: rgba(255,93,93,.35)"` : "";
 
     $("playerPanel").innerHTML = `
       <div class="pill">
         <div>
           <div class="title">${p.name}</div>
-          <div class="desc">${p.nationality} • ${p.age} anos • ${roleTag} • ${p.position} (${pos.label})</div>
+          <div class="desc">${p.nationality} • ${p.age} anos • ${p.type} • ${p.position} (${pos.label})</div>
         </div>
         <div class="big">${p.overall}</div>
       </div>
 
       <div class="row" style="margin-bottom:10px">
         <span class="tag">🏟️ <b>${p.club || "Sem clube"}</b></span>
-        <span class="tag">🏆 <b>${p.leagueName}</b></span>
-        <span class="tag">🏅 Reputação: <b>${p.reputation}</b></span>
+        <span class="tag">🏅 REP: <b>${p.reputation}</b></span>
+        <span class="tag">😄 Felicidade: <b>${p.happiness}</b></span>
+        ${inj}
       </div>
 
       <div class="row">
-        <div class="col"><div class="tag">💰 Salário/sem: <b>${formatBRL(p.weeklySalary)}</b></div></div>
-        <div class="col"><div class="tag">🧾 Contrato: <b>${p.contractWeeks} sem</b></div></div>
+        <div class="col"><div class="tag">💰 Carteira: <b>${formatBRL(p.wallet)}</b></div></div>
+        <div class="col"><div class="tag">💵 Salário/sem: <b>${formatBRL(p.weeklySalary)}</b></div></div>
       </div>
 
-      <div class="row">
-        <div class="col"><div class="tag">💥 Multa: <b>${formatBRL(p.releaseClause)}</b></div></div>
-        <div class="col">${injuryLine}</div>
+      <div class="row" style="margin-top:8px">
+        <div class="col"><div class="tag" ${debtStyle}>📌 Dívidas: <b>${formatBRL(debt)}</b></div></div>
+        <div class="col"><div class="tag">🏠 Patrimônio: <b>${formatBRL(netWorth(p))}</b></div></div>
       </div>
 
-      <div class="divider"></div>
-
-      <div class="statGrid">
-        <div class="meter"><div><div class="k">PAC</div><div class="v">${p.attrs.PAC}</div></div><span class="tag">⚡</span></div>
-        <div class="meter"><div><div class="k">SHO</div><div class="v">${p.attrs.SHO}</div></div><span class="tag">🎯</span></div>
-        <div class="meter"><div><div class="k">PAS</div><div class="v">${p.attrs.PAS}</div></div><span class="tag">🅰️</span></div>
-        <div class="meter"><div><div class="k">DEF</div><div class="v">${p.attrs.DEF}</div></div><span class="tag">🛡️</span></div>
-        <div class="meter"><div><div class="k">PHY</div><div class="v">${p.attrs.PHY}</div></div><span class="tag">💪</span></div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="row">
-        <div class="col"><div class="tag">😄 Moral: <b>${p.morale}</b></div></div>
-        <div class="col"><div class="tag">⚡ Físico: <b>${p.fitness}</b></div></div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="row">
-        <span class="tag">🏦 Carteira: <b>${formatBRL(p.wallet)}</b></span>
-        <span class="tag">🧾 Imposto atual: <b>${taxRate}%</b></span>
-        <span class="tag" style="border-color: rgba(255,93,93,.35)">📌 Dívida: <b>${formatBRL(p.finance.debt || 0)}</b></span>
-      </div>
-
-      <div class="hint" style="margin-top:10px">
-        <b>Potencial:</b> ${p.potential}. Dificuldade: <b>${p.difficulty}</b> (jogar x${d.playMul.toFixed(2)}, evolução x${d.growthMul.toFixed(2)}, lesões x${d.injuryMul.toFixed(2)}).
+      <div class="tiny" style="margin-top:10px">
+        Juros: investimento <b>+1%/sem</b> • dívidas <b>+1,5%/sem</b>. Manutenção e parcelas são cobradas ao jogar semana.
       </div>
     `;
   }
@@ -2038,39 +2119,73 @@
     $("weekBig").textContent = state.week;
 
     const mid = state.midWindowWeek;
-    const left = mid - state.week;
-    $("midTag").textContent = (state.week < mid)
-      ? `🪟 Janela: falta ${left} sem`
-      : (state.week === mid ? `🪟 Janela aberta (semana ${mid})` : `🪟 Janela já passou`);
+    $("midTag").textContent = (state.week < mid) ? `🪟 Janela: falta ${mid - state.week} sem`
+      : (state.week === mid ? `🪟 Janela aberta` : `🪟 Janela passou`);
 
+    const p = state.player;
+    const taxBox = $("taxBox");
+
+    if(!p){
+      $("taxTag").textContent = "🧾 OK";
+      $("taxLine").textContent = "No fim da temporada você decide pagar ou sonegar.";
+      taxBox.innerHTML = `<div class="hint">Crie um jogador.</div>`;
+      return;
+    }
+
+    ensurePlayer(p);
+
+    if(state.tax.pending){
+      $("taxTag").textContent = "🚨 PENDENTE";
+      $("taxLine").textContent = `Impostos pendentes da Temporada ${state.tax.seasonRef}. Você precisa decidir.`;
+      taxBox.innerHTML = `
+        <div class="boxTitle">Impostos pendentes: ${formatBRL(state.tax.dueTotal||0)}</div>
+        <div class="boxSub">Clique em “Finalizar Temporada” para abrir a decisão.</div>
+        <div class="boxMid">
+          <span>👀 Risco (se sonegar): <b>${Math.round(taxCaughtChance()*100)}%</b></span>
+          <span>📌 Dívidas: <b>${formatBRL(totalDebt(p))}</b></span>
+        </div>
+      `;
+    } else {
+      $("taxTag").textContent = "🧾 OK";
+      $("taxLine").textContent = "No fim da temporada você decide pagar ou sonegar.";
+      taxBox.innerHTML = `
+        <div class="boxTitle">✅ Situação fiscal</div>
+        <div class="boxSub">Último imposto total: ${formatBRL(p.finance.lastTaxDueTotal||0)} • Multas: ${formatBRL(p.finance.totalFines||0)}</div>
+        <div class="boxMid">
+          <span>💼 Salário na temporada: <b>${formatBRL(p.finance.seasonSalaryEarned||0)}</b></span>
+          <span>🎁 Bônus/luvas: <b>${formatBRL(p.finance.seasonBonusesEarned||0)}</b></span>
+          <span>🏠 IPTU estimado: <b>${formatBRL(calcIPTUFromAssets(p))}</b></span>
+        </div>
+      `;
+    }
+  }
+
+  function renderNews(){
     $("newsTag").textContent = `📰 ${state.news.length}`;
-
     const nl = $("newsList");
     nl.innerHTML = "";
     if(state.news.length === 0){
       nl.innerHTML = `<div class="hint">Sem notificações.</div>`;
-    } else {
-      for(const n of state.news){
-        const d = new Date(n.t);
-        const hh = String(d.getHours()).padStart(2,"0");
-        const mm = String(d.getMinutes()).padStart(2,"0");
-        const item = document.createElement("div");
-        item.className = "box";
-        item.innerHTML = `<div class="boxTitle">${n.text}</div><div class="boxSub">${hh}:${mm}</div>`;
-        nl.appendChild(item);
-      }
+      return;
+    }
+    for(const n of state.news){
+      const d = new Date(n.t);
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      const item = document.createElement("div");
+      item.className = "box";
+      item.innerHTML = `<div class="boxTitle">${n.text}</div><div class="boxSub">${hh}:${mm}</div>`;
+      nl.appendChild(item);
     }
   }
 
   function renderOffers(){
     const ol = $("offersList");
     ol.innerHTML = "";
-
     if(state.offers.length === 0){
       ol.innerHTML = `<div class="hint">Nenhuma proposta no momento.</div>`;
       return;
     }
-
     state.offers.forEach((o, idx)=>{
       const item = document.createElement("div");
       item.className = "box";
@@ -2099,60 +2214,26 @@
     });
   }
 
-  function renderObjectives(){
-    const p = state.player;
-    const list = $("objList");
-    list.innerHTML = "";
-
-    if(!p){
-      $("objTag").textContent = "🎯 0/0";
-      list.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
-      return;
-    }
-
-    let done = 0;
-    for(const o of state.objectives){
-      let prog = 0;
-      if(o.kind === "matches") prog = p.seasonStats.matches;
-      if(o.kind === "goals") prog = p.seasonStats.goals;
-      if(o.kind === "assists") prog = p.seasonStats.assists;
-      if(o.kind === "cleanSheets") prog = p.seasonStats.cleanSheets;
-      if(o.kind === "avgRating") prog = p.seasonStats.avgRating;
-
-      const okNow = (o.kind === "avgRating") ? (prog >= o.target) : (prog >= o.target);
-      if(okNow) done++;
-
-      const item = document.createElement("div");
-      item.className = "box";
-      item.innerHTML = `
-        <div class="boxTitle">${okNow ? "✅" : "🎯"} ${o.title}</div>
-        <div class="boxSub">Progresso: ${o.kind === "avgRating" ? prog.toFixed(2) : prog} / ${o.target}</div>
-        <div class="boxMid">
-          <span>💵 Recompensa <b>${formatBRL(o.rewardMoney)}</b></span>
-          <span>🏅 Reputação <b>+${o.rewardRep}</b></span>
-        </div>
-      `;
-      list.appendChild(item);
-    }
-
-    $("objTag").textContent = `🎯 ${done}/${state.objectives.length}`;
-  }
-
-  function renderBank(){
+  function renderFinancas(){
     const p = state.player;
     const box = $("bankMeters");
     box.innerHTML = "";
 
     if(!p){
-      box.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
+      box.innerHTML = `<div class="hint">Crie um jogador.</div>`;
       return;
     }
+    ensurePlayer(p);
 
     const meters = [
       { k:"Carteira", v: formatBRL(p.wallet) },
       { k:"Investido", v: formatBRL(p.bank.invested) },
       { k:"Rendimento total", v: formatBRL(p.bank.totalInterest) },
       { k:"Último rendimento", v: formatBRL(p.bank.lastInterest) },
+      { k:"Dívida impostos", v: formatBRL(p.finance.taxDebt || 0) },
+      { k:"Dívida geral", v: formatBRL(p.finance.generalDebt || 0) },
+      { k:"Juros (último)", v: formatBRL(p.finance.lastDebtInterest || 0) },
+      { k:"Multas acumuladas", v: formatBRL(p.finance.totalFines || 0) },
       { k:"Banco", v: p.bank.name }
     ];
 
@@ -2162,155 +2243,149 @@
       el.innerHTML = `<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div><span class="tag">💳</span>`;
       box.appendChild(el);
     });
+
+    // loans
+    const loans = p.finance.loans || [];
+    $("loanTag").textContent = `📄 ${loans.length}`;
+    const ll = $("loanList");
+    ll.innerHTML = "";
+    if(loans.length === 0){
+      ll.innerHTML = `<div class="hint">Nenhum financiamento ativo.</div>`;
+    } else {
+      loans.forEach((L)=>{
+        const item = document.createElement("div");
+        item.className = "box";
+        item.innerHTML = `
+          <div class="boxTitle">📄 ${L.itemName}</div>
+          <div class="boxSub">Restam ${L.weeksLeft}/${L.weeksTotal} semanas • Juros ${(L.rateWeekly*100).toFixed(1)}%/sem</div>
+          <div class="boxMid">
+            <span>Parcela: <b>${formatBRL(L.weeklyPayment)}</b></span>
+            <span>Saldo (principal): <b>${formatBRL(L.principal)}</b></span>
+            <span>Atrasos: <b>${L.missed||0}</b></span>
+          </div>
+        `;
+        ll.appendChild(item);
+      });
+    }
   }
 
   function renderShop(){
     const p = state.player;
+    const shop = $("shopList");
+    const ownedList = $("ownedList");
 
-    const shopMeters = $("shopMeters");
-    shopMeters.innerHTML = "";
+    shop.innerHTML = "";
+    ownedList.innerHTML = "";
 
     if(!p){
       $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>R$ 0</b>`;
-      shopMeters.innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
-      $("shopList").innerHTML = `<div class="hint">Crie um jogador primeiro.</div>`;
-      $("ownedList").innerHTML = `<div class="hint">Sem itens.</div>`;
+      $("ownedTag").textContent = `📦 0`;
+      shop.innerHTML = `<div class="hint">Crie um jogador.</div>`;
+      ownedList.innerHTML = `<div class="hint">Sem itens.</div>`;
       return;
     }
+    ensurePlayer(p);
 
-    // Atualiza tag de patrimônio total (carteira + investido + ativos - dívida)
-    $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>${formatBRL(totalNetWorth())}</b>`;
+    $("netWorthTag").innerHTML = `🏠 Patrimônio: <b>${formatBRL(netWorth(p))}</b>`;
+    $("ownedTag").textContent = `📦 ${p.owned.length}`;
 
-    // Meters da loja (semanais)
-    const meters = [
-      { k:"Ativos (valor atual)", v: formatBRL(totalMarketAssets()) },
-      { k:"Variação dos ativos (últ. update)", v: formatBRL(p.finance.lastAssetDelta || 0) },
-      { k:"Renda passiva (últ. semana)", v: formatBRL(p.finance.lastPassiveIncome || 0) },
-      { k:"Manutenção (últ. semana)", v: formatBRL(p.finance.lastMaintenance || 0) },
-      { k:"Dívida", v: formatBRL(p.finance.debt || 0) }
-    ];
-    meters.forEach(m=>{
-      const el = document.createElement("div");
-      el.className = "meter";
-      el.innerHTML = `<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div><span class="tag">🏪</span>`;
-      shopMeters.appendChild(el);
-    });
-
-    // lista de compra
-    const shop = $("shopList");
-    shop.innerHTML = "";
-
+    // catálogo
     SHOP_ITEMS.forEach(item=>{
       const owned = p.owned.some(o=>o.id===item.id);
 
-      const meta = item.meta || {};
-      const small = [];
-      if(meta.incomePerWeek) small.push(`Renda: ${formatBRL(meta.incomePerWeek)}/sem`);
-      if(meta.upkeepPerWeek) small.push(`Manutenção: ${formatBRL(meta.upkeepPerWeek)}/sem`);
-      if(meta.depPerWeek) small.push(`Deprecia: ${(meta.depPerWeek*100).toFixed(2)}%/sem`);
-      if(meta.appPerWeek) small.push(`Valoriza: ${(meta.appPerWeek*100).toFixed(2)}%/sem`);
-
       const el = document.createElement("div");
       el.className = "box";
+
+      const varText = item.appreciationSeason ? `📈 +${Math.round(item.appreciationSeason*100)}%/temp`
+                   : item.depreciationSeason ? `📉 ${Math.round(item.depreciationSeason*100)}%/temp`
+                   : "—";
+
+      const iptuText = item.iptuRateSeason ? `🏛️ IPTU ${(item.iptuRateSeason*100).toFixed(1)}%/temp` : "🏛️ IPTU: —";
+      const maintText = item.maintenanceWeekly ? `🧰 Manut: ${formatBRL(item.maintenanceWeekly)}/sem` : `🧰 Manut: —`;
+
       el.innerHTML = `
         <div class="boxTitle">${owned ? "✅" : "🛒"} ${item.name}</div>
         <div class="boxSub">${item.type} • Preço ${formatBRL(item.price)}</div>
         <div class="boxMid">
-          <span>Saldo: <b>${formatBRL(p.wallet)}</b></span>
-          ${small.length ? `<span>📌 <b>${small.join(" • ")}</b></span>` : ``}
+          <span>${varText}</span>
+          <span>${maintText}</span>
+          <span>${iptuText}</span>
+          <span>😄 +${item.moodGain||0}</span>
+          <span>🏅 +${item.repGain||0}</span>
         </div>
         <div class="row" style="margin-top:10px">
-          <button class="btn btnSmall ${owned ? "" : "btnPrimary"}" ${owned ? "disabled" : ""} data-buy="${item.id}">
-            ${owned ? "Comprado" : "Comprar"}
+          <button class="btn btnSmall btnPrimary" ${owned?"disabled":""} data-buycash="${item.id}">
+            ${owned ? "Já possui" : "Comprar à vista"}
+          </button>
+          <button class="btn btnSmall" ${owned?"disabled":""} data-buyfin="${item.id}">
+            ${owned ? "—" : "Financiar"}
           </button>
         </div>
       `;
       shop.appendChild(el);
     });
 
-    shop.querySelectorAll("[data-buy]").forEach(btn=>{
+    shop.querySelectorAll("[data-buycash]").forEach(btn=>{
       btn.addEventListener("click", (e)=>{
-        const id = e.currentTarget.getAttribute("data-buy");
-        buyItem(id);
+        const id = e.currentTarget.getAttribute("data-buycash");
+        buyCash(id);
+      });
+    });
+    shop.querySelectorAll("[data-buyfin]").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        const id = e.currentTarget.getAttribute("data-buyfin");
+        openFinModal(id);
       });
     });
 
-    // itens comprados (com valor atual + vender)
-    const ownedList = $("ownedList");
-    ownedList.innerHTML = "";
+    // seus itens
     if(p.owned.length === 0){
       ownedList.innerHTML = `<div class="hint">Você ainda não comprou nada.</div>`;
     } else {
-      // atualiza visualmente valores (sem forçar cashflows)
-      const gNow = globalWeekNumber();
-      p.owned.forEach(o=>{
-        // atualiza valor "on the fly" só para mostrar (sem mexer no lastValueGlobalWeek)
-        const tmp = { ...o };
-        tmp.lastValueGlobalWeek = o.lastValueGlobalWeek ?? o.boughtGlobalWeek ?? gNow;
-        const upd = currentOwnedValue(tmp);
-        o.currentValue = upd.value; // ok manter atualizado visualmente
-      });
+      p.owned.slice().reverse().forEach((o, revIdx)=>{
+        // revIdx é invertido, precisamos mapear pro índice real
+        const idx = p.owned.length - 1 - revIdx;
 
-      p.owned.slice().reverse().forEach(o=>{
         const el = document.createElement("div");
         el.className = "box";
 
         const d = new Date(o.boughtAt);
         const dt = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
 
-        const cur = o.currentValue ?? o.price;
-        const diff = cur - o.price;
-        const diffTxt = `${diff>=0?"+":""}${formatBRL(diff)}`;
+        const iptuText = (o.iptuRateSeason && o.iptuRateSeason>0) ? `🏛️ IPTU ${(o.iptuRateSeason*100).toFixed(1)}%/temp` : "🏛️ IPTU: —";
+        const maintText = o.maintenanceWeekly ? `🧰 ${formatBRL(o.maintenanceWeekly)}/sem` : "🧰 —";
 
         el.innerHTML = `
           <div class="boxTitle">🏷️ ${o.name}</div>
           <div class="boxSub">${o.type} • comprado em ${dt}</div>
           <div class="boxMid">
-            <span>Compra: <b>${formatBRL(o.price)}</b></span>
-            <span>Valor atual: <b>${formatBRL(cur)}</b></span>
-            <span>${diff>=0 ? "📈" : "📉"} Diferença: <b>${diffTxt}</b></span>
+            <span>Valor atual: <b>${formatBRL(o.currentValue||0)}</b></span>
+            <span>${maintText}</span>
+            <span>${iptuText}</span>
           </div>
           <div class="row" style="margin-top:10px">
-            <button class="btn btnSmall btnBlue" data-sell="${o.id}">Vender</button>
+            <button class="btn btnSmall btnDanger" data-sell="${idx}">Vender</button>
           </div>
-          <div class="tiny">Venda tem taxa de 2%.</div>
         `;
         ownedList.appendChild(el);
       });
 
       ownedList.querySelectorAll("[data-sell]").forEach(btn=>{
         btn.addEventListener("click", (e)=>{
-          const id = e.currentTarget.getAttribute("data-sell");
-          sellItem(id);
+          const idx = Number(e.currentTarget.getAttribute("data-sell"));
+          sellItem(idx);
         });
       });
     }
   }
 
   function renderHistory(){
-    const p = state.player;
     $("histTag").textContent = `📚 ${state.history.length} temporadas`;
-
-    const line = $("currentStatsLine");
     const list = $("historyList");
     list.innerHTML = "";
 
-    if(!p){
-      line.innerHTML = `<span class="tag">Crie um jogador primeiro</span>`;
-      list.innerHTML = `<div class="hint">Sem histórico.</div>`;
-      return;
-    }
-
-    line.innerHTML = `
-      <span class="tag">Jogos: <b>${p.seasonStats.matches}</b></span>
-      <span class="tag">Gols: <b>${p.seasonStats.goals}</b></span>
-      <span class="tag">Assists: <b>${p.seasonStats.assists}</b></span>
-      <span class="tag">CS: <b>${p.seasonStats.cleanSheets}</b></span>
-      <span class="tag">Nota: <b>${p.seasonStats.avgRating.toFixed(2)}</b></span>
-    `;
-
     if(state.history.length === 0){
-      list.innerHTML = `<div class="hint">Nenhuma temporada finalizada ainda.</div>`;
+      list.innerHTML = `<div class="hint">Sem histórico ainda.</div>`;
       return;
     }
 
@@ -2319,13 +2394,18 @@
       el.className = "box";
       el.innerHTML = `
         <div class="boxTitle">🏁 Temporada ${h.season} • ${h.club} (${h.league})</div>
-        <div class="boxSub">${h.position} • Idade ${h.age} • OVR ${h.overallStart}→${h.overallEnd} • REP ${h.repStart}→${h.repEnd}</div>
+        <div class="boxSub">${h.position} • Idade ${h.age} • OVR ${h.overall} • REP ${h.rep} • 😄 ${h.happy}</div>
         <div class="boxMid">
           <span>Jogos <b>${h.stats.matches}</b></span>
           <span>Gols <b>${h.stats.goals}</b></span>
           <span>Assists <b>${h.stats.assists}</b></span>
-          <span>CS <b>${h.stats.cleanSheets}</b></span>
           <span>Nota <b>${h.stats.avgRating.toFixed(2)}</b></span>
+        </div>
+        <div class="boxMid">
+          <span>Impostos: <b>${formatBRL(h.taxDue||0)}</b></span>
+          <span>Dívidas: <b>${formatBRL(h.debtEnd||0)}</b></span>
+          <span>Patrimônio: <b>${formatBRL(h.netWorth||0)}</b></span>
+          <span>Financiamentos: <b>${h.loans||0}</b></span>
         </div>
       `;
       list.appendChild(el);
@@ -2335,14 +2415,14 @@
   function render(){
     renderPlayerPanel();
     renderSeason();
+    renderNews();
     renderOffers();
-    renderObjectives();
-    renderBank();
+    renderFinancas();
     renderShop();
     renderHistory();
 
-    const p = state.player;
-    const hasCareer = !!(p && p.club);
+    const hasCareer = !!(state.player && state.player.club);
+
     $("btnPlayWeek").disabled = !hasCareer;
     $("btnTrain").disabled = !hasCareer;
     $("btnRest").disabled = !hasCareer;
@@ -2351,14 +2431,14 @@
   }
 
   // =========================
-  // SAVE / LOAD
+  // SAVE/LOAD
   // =========================
   function save(){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       toast("Jogo salvo!");
     }catch(e){
-      alert("Não consegui salvar (storage cheio ou bloqueado).");
+      alert("Não consegui salvar (storage bloqueado/cheio).");
     }
   }
 
@@ -2368,39 +2448,22 @@
       if(!raw){ toast("Não existe save ainda."); return; }
       state = JSON.parse(raw);
 
+      // defaults
       state.newsMax ??= 8;
+      state.offers ??= [];
       state.history ??= [];
-      state.objectives ??= [];
+      state.tax ??= { pending:false, seasonRef:0, dueIncome:0, dueIPTU:0, dueTotal:0, attempts:0 };
+      state.fin ??= { open:false, itemId:null };
+      state.weeksPerSeason ??= 38;
       state.midWindowWeek ??= 19;
 
       if(state.player){
-        state.player.bank ||= { name:"Santander", invested:0, totalInterest:0, lastInterest:0 };
-        state.player.finance ||= {
-          taxesPaidTotal:0,lastTax:0,lastNetSalary:0,
-          passiveIncomeTotal:0,lastPassiveIncome:0,
-          maintenancePaidTotal:0,lastMaintenance:0,
-          debt:0,lastAssetDelta:0,salesTotal:0,salesProfitTotal:0
-        };
-        state.player.owned ||= [];
+        ensurePlayer(state.player);
         state.player.attrs ||= genAttributes(state.player.type || "Base", state.player.age || 16);
         state.player.overall ||= calcOverallFromAttrs(state.player.position || "ATA", state.player.attrs);
+        state.player.potential ||= genPotential(state.player.overall);
         state.player.seasonStats ||= { matches:0, goals:0, assists:0, cleanSheets:0, avgRating:6.6 };
         state.player.careerStats ||= { matches:0, goals:0, assists:0, cleanSheets:0 };
-        state.player.seasonStartOverall ??= state.player.overall;
-        state.player.seasonStartRep ??= state.player.reputation ?? 10;
-
-        // compat: owned items antigos sem valores/semana
-        const gNow = globalWeekNumber();
-        state.player.owned.forEach(o=>{
-          o.meta ||= o.meta || {};
-          o.boughtGlobalWeek ??= gNow;
-          o.lastValueGlobalWeek ??= o.boughtGlobalWeek;
-          o.currentValue ??= o.price;
-        });
-
-        if(!state.objectives || state.objectives.length === 0){
-          buildObjectives();
-        }
       }
 
       toast("Save carregado!");
@@ -2409,6 +2472,11 @@
       else showScreen("screenStart");
 
       render();
+
+      // se imposto pendente, abre modal
+      if(state.tax && state.tax.pending){
+        openTaxDecisionModal();
+      }
     }catch(e){
       alert("Erro ao carregar o save.");
     }
@@ -2425,28 +2493,30 @@
   $("btnGenerate").addEventListener("click", generatePlayer);
 
   $("btnStartCareer").addEventListener("click", ()=>{
-    if(!state.player){
-      generatePlayer();
-    }
+    if(!state.player) generatePlayer();
     showClubPick();
   });
 
-  $("btnBackToStart").addEventListener("click", ()=>{
-    showScreen("screenStart");
-  });
-
+  $("btnBackToStart").addEventListener("click", ()=> showScreen("screenStart"));
   $("btnConfirmPick").addEventListener("click", confirmClubPick);
 
   $("btnPlayWeek").addEventListener("click", playWeek);
   $("btnTrain").addEventListener("click", train);
   $("btnRest").addEventListener("click", rest);
-  $("btnEndSeason").addEventListener("click", endSeason);
+
+  $("btnEndSeason").addEventListener("click", ()=>{
+    if(state.tax && state.tax.pending){
+      openTaxDecisionModal();
+      return;
+    }
+    endSeason();
+  });
 
   $("btnRenew").addEventListener("click", renewContract);
 
   $("btnClearOffers").addEventListener("click", ()=>{
     state.offers = [];
-    render();
+    renderOffers();
     toast("Propostas limpas.");
   });
 
@@ -2462,27 +2532,43 @@
     $("inpWithdraw").value = "";
   });
 
-  $("btnSellHint").addEventListener("click", ()=>{
-    toast("Dica: Vender tem taxa de 2%. Negócios geram renda e também têm manutenção.");
+  $("btnPayDebt").addEventListener("click", ()=>{
+    const v = Number($("inpPayDebt").value || 0);
+    payDebt(v);
+    $("inpPayDebt").value = "";
   });
 
   $("btnSave").addEventListener("click", save);
   $("btnLoad").addEventListener("click", load);
   $("btnExit").addEventListener("click", exitGame);
 
-  document.querySelectorAll(".tab").forEach(t=>{
-    t.addEventListener("click", ()=>{
-      setActiveTab(t.getAttribute("data-tab"));
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      setActiveTab(btn.getAttribute("data-tab"));
     });
+  });
+
+  // travar fechar modal de imposto clicando fora
+  $("taxModalBack").addEventListener("click", (e)=>{
+    if(e.target === $("taxModalBack")){
+      toast("Decida: pagar ou sonegar para seguir.");
+    }
+  });
+  // financiamento pode fechar fora
+  $("finModalBack").addEventListener("click", (e)=>{
+    if(e.target === $("finModalBack")){
+      closeFinModal();
+    }
   });
 
   // Auto-save
   setInterval(()=> { if(state.player) save(); }, 60_000);
 
-  // Render inicial
+  // init
   render();
 
 })();
 </script>
+
 </body>
 </html>
