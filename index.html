@@ -565,22 +565,40 @@
 <script>
 (function(){
   // =========================
-  // LIGAS (ATUAIS)
-  // =========================
-  const BRASILEIRAO = [
-    "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
-    "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
-  ];
+// LIGAS (ATUAIS)
+// =========================
+const BRASILEIRAO = [
+  "Atlético Mineiro","Bahia","Botafogo","Ceará","Corinthians","Cruzeiro","Flamengo","Fluminense","Fortaleza","Grêmio",
+  "Internacional","Juventude","Mirassol","Palmeiras","Red Bull Bragantino","Santos","São Paulo","Sport","Vasco da Gama","Vitória"
+];
 
-  const PREMIER = [
-    "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
-    "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
-  ];
+const PREMIER = [
+  "Arsenal","Aston Villa","Bournemouth","Brentford","Brighton & Hove Albion","Burnley","Chelsea","Crystal Palace","Everton","Fulham",
+  "Leeds United","Liverpool","Manchester City","Manchester United","Newcastle United","Nottingham Forest","Sunderland","Tottenham Hotspur","West Ham United","Wolverhampton Wanderers"
+];
 
-  const LEAGUES = [
-    { id:"BR", name:"Brasileirão", currency:"R$", teams: BRASILEIRAO, repWeight: 1.00 },
-    { id:"EN", name:"Premier League", currency:"£", teams: PREMIER, repWeight: 1.20 }
-  ];
+// 🇦🇷 ARGENTINA
+const ARGENTINA = [
+  "Boca Juniors","River Plate","Racing Club","Independiente","San Lorenzo",
+  "Estudiantes","Vélez Sarsfield","Lanús","Rosario Central","Newell's Old Boys",
+  "Defensa y Justicia","Talleres","Huracán","Argentinos Juniors","Godoy Cruz",
+  "Banfield","Belgrano","Unión","Platense","Sarmiento"
+];
+
+// 🇪🇸 ESPANHA
+const LALIGA = [
+  "Real Madrid","Barcelona","Atlético de Madrid","Sevilla","Valencia",
+  "Villarreal","Real Sociedad","Athletic Bilbao","Real Betis","Celta de Vigo",
+  "Girona","Getafe","Mallorca","Osasuna","Rayo Vallecano",
+  "Alavés","Granada","Las Palmas","Cádiz","Espanyol"
+];
+
+const LEAGUES = [
+  { id:"BR", name:"Brasileirão", currency:"R$", teams: BRASILEIRAO, repWeight: 1.00 },
+  { id:"EN", name:"Premier League", currency:"£", teams: PREMIER, repWeight: 1.20 },
+  { id:"AR", name:"Liga Argentina", currency:"$", teams: ARGENTINA, repWeight: 0.95 },
+  { id:"ES", name:"La Liga", currency:"€", teams: LALIGA, repWeight: 1.15 }
+];
 
   const POSITIONS = [
     { id:"ATA", label:"Centroavante", weights:{PAC:0.22, SHO:0.38, PAS:0.18, DEF:0.06, PHY:0.16} },
@@ -704,10 +722,13 @@
     return (Math.random() < baseChance) ? "Base" : "Profissional";
   }
   function decideStartLeagueByNat(nationality){
-    if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
-    if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
-    return (Math.random() < 0.55) ? "EN" : "BR";
-  }
+  if(nationality === "Brasil") return (Math.random() < 0.80) ? "BR" : "EN";
+  if(nationality === "Inglaterra") return (Math.random() < 0.85) ? "EN" : "BR";
+  if(nationality === "Argentina") return (Math.random() < 0.85) ? "AR" : "ES";
+  if(nationality === "Espanha") return (Math.random() < 0.85) ? "ES" : "EN";
+  return (Math.random() < 0.50) ? "EN" : "BR";
+}
+
   function genSalary(startType){
     if(startType === "Base") return randInt(5000, 15000);
     return randInt(40000, 120000);
@@ -2167,5 +2188,6 @@
 </script>
 </body>
 </html>
+
 
 
