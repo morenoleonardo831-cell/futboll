@@ -1941,7 +1941,7 @@
     const perf = 1 + (p.reputation/180) + (p.overall/250);
     const raise = clamp(0.04 + (perf*0.06), 0.05, 0.22) * urgency;
 
-    const newSalary = clamp(Math.round((p.weeklySalary * (1 + raise))/1000)*1000, 5000, 450000);
+    const newSalary = clamp(Math.round((p.weeklySalary * (1 + raise))/1000)*1000, 15000, 750000);
     const newWeeks = clamp(randInt(52, 182) + (p.reputation >= 70 ? 26 : 0), 26, 260);
     const signingBonus = calcSigningBonus(newSalary, p.reputation);
     const newClause = calcReleaseClause(newSalary, "Profissional");
@@ -2572,3 +2572,4 @@
 
 </body>
 </html>
+
